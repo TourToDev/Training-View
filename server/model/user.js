@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
             max20min:Number,
             max60min:Number,
         },
-        trainingZone:[
+        trainingZones:[
             {
                 zoneName:String,
                 zoneMaxPower: Number,
@@ -39,32 +39,42 @@ const UserSchema = new mongoose.Schema({
         ]
     },
     trainLoad:{
-        TSS:Number,
+        totalTSS:Number,
         CTL:Number,
+        ACL:Number,
+        TSB:Number,
     },
-    workoutCollection:[{
+    workoutsCollection:[{
         basic:{
-            date:Date,
+            date:Date || String,
             duration:Number,
+            elevation_gain:Number,
             distance:Number,
             avg_speed:Number,
-            elevation_gain:Number,
+            max_speed:Number,
+            avg_cadence:Number,
+            max_cadence:Number,
+            avg_heart_rate:Number,
+            max_heart_rate:Number,
         },
 
         power:{
             avg_power:Number,
+            max_power:Number,
             normalized_power:Number,
             TSS:Number,
             IF:Number,
+            VI:Number,
         },
 
-        detailedWorkoutData:[
+        detail:[
             {
                 second: Number,
-                power: Number,
                 altitude: Number,
                 speed: Number,
+                power: Number,
                 heart_rate: Number,
+                cadence: Number,
             }
         ]
     }]
@@ -72,12 +82,12 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre("save",function (next) {
     if (this.power.FTP) {
-        this.power.trainingZone = setTrainingZone(this.power.trainingZone,this.power.FTP)
+        this.power.trainingZone = setTrainingZone(this.power.trainingZones,this.power.FTP)
     }
     next();
 })
 
-const setTrainingZone = (trainingZone,FTP) => {
+var setTrainingZone = (trainingZone,FTP) => {
     const zoneToPower = {
         activeRecovery:parseInt(FTP * 0.55),
         endurance: parseInt(FTP * 0.75),

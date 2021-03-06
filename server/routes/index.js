@@ -12,6 +12,7 @@ const userRoute = require('./userRoute');
 
  router.post('/login', passport.authenticate('local', { failureRedirect: '/login-failure', successRedirect: 'login-success' }));
 
+ 
  router.post('/register', (req, res, next) => {
     const requestBody = req.body;
     const saltHash = genPassword(requestBody.pw);

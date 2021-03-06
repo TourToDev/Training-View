@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
-function calculateNormalizedPower(records=[]) {
-    let recordsOfPower = records.map( (record) => {
+function calculateNormalizedPower(workoutDetail=[]) {
+    let recordsOfPower = workoutDetail.map( (record) => {
         return record.power
     } )
 
@@ -15,3 +15,33 @@ function calculateNormalizedPower(records=[]) {
     return Math.pow(_.mean(powered_rolling_avg),0.25);
 };
 
+
+function calculateIntensityFactor(NP,FTP) {
+    return NP/FTP;
+}
+
+function calculateTrainingStressScore(FTP,NP,duration,IF) {
+    return (duration * NP * IF) / (FTP * 36);
+}
+
+function calculateChronicTrainingLoad(params) {
+    //CTL = Average TSS of last 42 days
+}
+
+function calculateAcuteTrainingLoad(params) {
+    //ATL = Average TSS of last 7 days
+}
+
+function calculateTrainingStressBalance(params) {
+    //TSB = CTL – ATL
+}
+
+
+module.exports = {
+    calculateNormalizedPower,
+    calculateIntensityFactor,
+    calculateTrainingStressScore,
+    calculateChronicTrainingLoad,
+    calculateAcuteTrainingLoad,
+    calculateTrainingStressBalance,
+}
