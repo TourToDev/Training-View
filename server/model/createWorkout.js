@@ -23,13 +23,13 @@ const createWorkout = (basic={}, power={}, detail=[]) => {
         console.log("You have to calculate the NP first");
         return null;
       }
-      this.power.IF = calculateIntensityFactor(this.power.NP,this.basic.currentFTP);
+      this.power.IF = calculateIntensityFactor(this.power.NP,this.basic.FTP);
       return this.power.IF;
     }
   
     workoutObject.updateTSS = function () {
-      if (this.basic.currentFTP && this.power.NP && this.basic.duration && this.power.IF) {
-        this.power.TSS = calculateTrainingStressScore(this.basic.currentFTP,this.power.NP,this.basic.duration,this.power.IF);
+      if (this.basic.FTP && this.power.NP && this.basic.duration && this.power.IF) {
+        this.power.TSS = calculateTrainingStressScore(this.basic.FTP,this.power.NP,this.basic.duration,this.power.IF);
         return this.power.TSS;
       }
       console.log("Unable to calculate TSS");

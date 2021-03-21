@@ -24,16 +24,21 @@ function calculateTrainingStressScore(FTP,NP,duration,IF) {
     return (duration * NP * IF) / (FTP * 36);
 }
 
-function calculateChronicTrainingLoad(params) {
+function calculateChronicTrainingLoad(arrOfTSS) {
     //CTL = Average TSS of last 42 days
+    const CTL = _.mean(arrOfTSS);
+    return !CTL? 0: CTL;
 }
 
-function calculateAcuteTrainingLoad(params) {
+function calculateAcuteTrainingLoad(arrOfTSS) {
     //ATL = Average TSS of last 7 days
+    const ATL = _.mean(arrOfTSS);
+    return !ATL? 0: ATL;
 }
 
-function calculateTrainingStressBalance(params) {
+function calculateTrainingStressBalance(CTL,ATL) {
     //TSB = CTL – ATL
+    return CTL - ATL;
 }
 
 

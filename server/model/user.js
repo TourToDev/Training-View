@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { calculateChronicTrainingLoad, calculateAcuteTrainingLoad, calculateTrainingStressBalance } = require('../lib/powerAnalysisUtils');
 
 const UserSchema = new mongoose.Schema({
     username:{
@@ -24,29 +25,63 @@ const UserSchema = new mongoose.Schema({
             default:200
         },
         powerProfile:{
-            max5s:Number,
-            max30s:Number,
-            max1min:Number,
-            max5min:Number,
-            max20min:Number,
-            max60min:Number,
+            max5s:{
+                type: Number,
+                default: 0,
+            },
+            max30s:{
+                type: Number,
+                default: 0,
+            },
+            max1mins:{
+                type: Number,
+                default: 0,
+            },
+            max5mins:{
+                type: Number,
+                default: 0,
+            },
+            max20mins:{
+                type: Number,
+                default: 0,
+            },
+            max60mins:{
+                type: Number || null,
+                default: 0,
+            },
         },
-        trainingZones:[
-            {
-                zoneName:String,
-                zoneMaxPower: Number,
-            }
-        ]
+        trainingZones:{
+            activeRecovery:Number,
+            endurance: Number,
+            tempo: Number,
+            lactateThreshold:Number,
+            vo2Max:Number,
+            anaerobicCapacity: Number,
+            neuromuscular: String,
+        }
     },
-    trainLoad:{
-        totalTSS:Number,
-        CTL:Number,
-        ACL:Number,
-        TSB:Number,
+    trainingLoad:{
+        weeklyTSS:{
+            type: Number,
+            default:0
+        },
+        CTL:{
+            type: Number,
+            default:0
+        },
+        ACL:{
+            type: Number,
+            default:0
+        },
+        TSB:{
+            type: Number,
+            default:0
+        },
     },
     workoutsCollection:[{
         basic:{
-            date:Date || String,
+            FTP:Number,
+            workoutTimestamp: String,
             duration:Number,
             elevation_gain:Number,
             distance:Number,
@@ -61,7 +96,7 @@ const UserSchema = new mongoose.Schema({
         power:{
             avg_power:Number,
             max_power:Number,
-            normalized_power:Number,
+            NP:Number,
             TSS:Number,
             IF:Number,
             VI:Number,
@@ -80,14 +115,38 @@ const UserSchema = new mongoose.Schema({
     }]
 });
 
+// This method usually is called after the user upload a new workout
+// The general idea is, get the part of workouts that fit the required condition
+// then get what we want from them.
+UserSchema.methods.updateTrainingLoad = async function () {
+    const workoutsCollection = this.workoutsCollection;
+    const CTL = calculateChronicTrainingLoad( workoutsCollection.filter( dayFromNow(42) ).map( workout => workout.power.TSS ) );
+    const ATL = calculateAcuteTrainingLoad( workoutsCollection.filter( dayFromNow(7) ).map( workout => workout.power.TSS ) );
+    const TSB = calculateTrainingStressBalance(CTL,ATL);
+
+    this.trainingLoad.CTL = CTL;
+    this.trainingLoad.ATL = ATL;
+    this.trainingLoad.TSB = TSB;
+
+    await this.save();
+
+    return ({
+        CTL,
+        ATL,
+        TSB
+    });
+};
+
+
+
 UserSchema.pre("save",function (next) {
     if (this.power.FTP) {
-        this.power.trainingZone = setTrainingZone(this.power.trainingZones,this.power.FTP)
+        this.power.trainingZones = setTrainingZone(this.power.FTP)
     }
     next();
 })
 
-var setTrainingZone = (trainingZone,FTP) => {
+function setTrainingZone (FTP) {
     const zoneToPower = {
         activeRecovery:parseInt(FTP * 0.55),
         endurance: parseInt(FTP * 0.75),
@@ -95,19 +154,19 @@ var setTrainingZone = (trainingZone,FTP) => {
         lactateThreshold:parseInt(FTP * 1.05),
         vo2Max:parseInt(FTP * 1.2),
         anaerobicCapacity: parseInt(FTP * 1.5),
-        neuromuscular: Infinity,
+        neuromuscular: "Infinity",
     }
-    for (const zoneName in zoneToPower) {
-        if (Object.hasOwnProperty.call(zoneToPower, zoneName)) {
-            const powerNum = zoneToPower[zoneName];
-            trainingZone.push({
-                zoneName,
-                zoneMaxPower:powerNum,
-            });
-        }
-    }
-    return trainingZone;
+
+    return zoneToPower;
 }
 
+// Judge if workout is in a certain time limit from today
+function dayFromNow(dayNum) {
+    return function (workout) {
+        const workoutTimestamp = workout.basic.workoutTimestamp;
+        const nowTime = Date.now();
+        return nowTime - workoutTimestamp <= dayNum*24*60*60*1000? true : false;
+    }
+}
 
 module.exports = UserSchema;
