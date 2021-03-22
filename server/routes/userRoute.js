@@ -110,16 +110,13 @@ router.post("/uploadWorkout", isAuth, (req,res)=>{
         //construct the workout object from fileData and other information
         const workout = getWorkoutObjectFromFile(data,currentFTP,workoutTimestamp);
   
-        console.log("Constructing workout object")
         workout.updateNP();
         workout.updateIF();
         workout.updateTSS();
-        console.log("Construction completed")
         
         //then save the workout into the collection
         const userDoc =  await User.findOne({username: req.user.username});
         userDoc.workoutsCollection.push(workout);
-        console.log("Data pushed, not saved yet")
         
         await userDoc.save();
 

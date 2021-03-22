@@ -16,7 +16,7 @@ const validate = values => {
   if (!values.pw) {
     errors.pw = "Required";
   } else if (values.pw.length > 15) {
-    errors.pw = "Must ve 15 chars and less";
+    errors.pw = "Must be 15 chars and less";
   }
 
   return errors
@@ -64,9 +64,13 @@ const LoginPage = ({setUser}) => {
           >
             <Form>
               <Field name="uname" type="text" placeholder="Enter Your Username" />
-              <ErrorMessage name="uname" />
+              <span className="error">
+                <ErrorMessage name="uname" />
+              </span>
               <Field name="pw" type="password" placeholder="Enter Your Password" />
-              <ErrorMessage name="pw"/>
+              <span className="error">
+                <ErrorMessage name="pw"/>
+              </span>
               <button type="submit">Login</button>
             </Form>
           </Formik>

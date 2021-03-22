@@ -70,6 +70,7 @@ const SignupForm = () => {
          </Form>
     </Formik>
   );
-
 };
+
+
 export default SignupForm;
