@@ -45,10 +45,9 @@ const SignupForm = () => {
         }}
         validate={validate}
         onSubmit={values => {
-            alert(JSON.stringify(values, null, 2));
             axios({
               method:"post",
-              url:"http://localhost:4000/register",
+              url:"http://localhost:3000/register",
               data:values,
             }).then( (res) => alert(res.data) )
         }}
@@ -61,8 +60,6 @@ const SignupForm = () => {
             <label htmlFor="password">Password</label>
             <Field name="password" type="password" />
             <ErrorMessage name="password" />
-
-
 
             <label htmlFor="passwordCheck">Enter Password Again</label>
             <Field name="passwordCheck" type="password" />

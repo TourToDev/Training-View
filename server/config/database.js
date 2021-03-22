@@ -13,15 +13,12 @@ require('dotenv').config();
  * DB_STRING=mongodb://<user>:<password>@localhost:27017/database_name
  */ 
 
-const conn = process.env.DB_STRING;
+const connectionString = process.env.DB_STRING;
 
-const connection = mongoose.createConnection(conn, {
+const connection = mongoose.createConnection(connectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-
-// Creates simple schema for a User.  The hash and salt are derived from the user's given password when they register
-
 
 
 const User = connection.model('User', UserSchema);

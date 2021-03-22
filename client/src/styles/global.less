@@ -1,17 +1,25 @@
 @import './variables.less';
 
 :root{
+    box-sizing: border-box;
     height: 100%;
-    width: 100%;
 }
 
-body {
-    border: 1px solid #cd853f;
-    height: inherit;
-    width: inherit;
+*,
+::before,
+::after {
+    box-sizing: inherit;
+}
+
+
+body{
+    height: 100%;
+}
+
+body * + * {
+    margin-top:1.5em;
 }
 
 #app {
-    height: inherit;
-    width: inherit;
+    height: 100%;
 }

@@ -9,6 +9,10 @@ const UserSchema = new mongoose.Schema({
     salt:String,
     hash: String,
     realName:String,
+    email:{
+        type:String,
+        unique:true,
+    },
     age:Number,
     weight: Number,
     gender:{
@@ -138,6 +142,67 @@ UserSchema.methods.updateTrainingLoad = async function () {
 };
 
 
+UserSchema.methods.updatePowerProfile = async function (workoutDetail) {
+
+    const getMaxAvgPower = (duration) => (powerArr) => {
+        let maxAvg;
+        if (powerArr.length < duration) {
+            return null;
+        }
+        for (let i = 0; i < powerArr.length - duration; i++) {
+            let sumOfPower = 0;
+            for (let j = 0; j < duration; j++) {
+                sumOfPower += powerArr[i+j];
+            }
+            let avg = sumOfPower/duration;
+            maxAvg = maxAvg > avg? maxAvg : avg;
+        }
+
+        return maxAvg;
+    }
+
+    const getPowerProfile = (workoutDetail) => {
+        const powerArr = workoutDetail.map( info => info.power );
+
+        return {
+            max5s : getMaxAvgPower(5)(powerArr),
+            max30s: getMaxAvgPower(30)(powerArr),
+            max1mins: getMaxAvgPower(60)(powerArr),
+            max5mins: getMaxAvgPower(300)(powerArr),
+            max20mins: getMaxAvgPower(1200)(powerArr),
+            max60mins: getMaxAvgPower(3600)(powerArr),
+        };
+    }
+    
+    const needUpdate = (originalProfile, newProfile) => {
+        let indicator = false;
+
+        const keys = Object.keys(originalProfile);
+
+        keys.forEach( key => {
+            if (originalProfile[key] < newProfile[key] || !originalProfile[key]) {
+                indicator = true;
+                return false;
+            }
+        } )
+        
+        return indicator;
+    }
+
+    const originalPowerProfile = this.power.powerProfile;
+
+    const newPowerProfile = getPowerProfile(workoutDetail);
+
+    if ( needUpdate(originalPowerProfile,newPowerProfile) ) {
+        this.power.powerProfile = newPowerProfile;
+        await this.save();
+
+        return newPowerProfile
+    }
+
+}
+
+//------------------------------------------------------
 
 UserSchema.pre("save",function (next) {
     if (this.power.FTP) {

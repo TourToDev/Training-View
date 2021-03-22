@@ -126,14 +126,12 @@ router.post("/uploadWorkout", isAuth, (req,res)=>{
         // schedule a macro task to update the CTL,ATL and TSB
         setTimeout( async ()=>{
             // calculate the new CTL, ATL, and TSB
-            const trainingLoad =  await userDoc.updateTrainingLoad();
-            console.log("Training load has been uploaded:");
-            console.log(trainingLoad);
-            //userDoc.updatePowerProfile(workout);
+            await userDoc.updateTrainingLoad();
+
+            await userDoc.updatePowerProfile(workout.detail);
         });
 
         res.send("Workout Saved");
-
     })
 })
 
@@ -206,8 +204,6 @@ router.post("/updatePowerProfile", async (req, res) => {
 
         const originalPowerProfile = doc.power.powerProfile;
 
-        console.log("original");
-        console.log(Object.keys(originalPowerProfile));
         const newPowerProfile = getPowerProfile(workout.detail);
 
         if ( needUpdate(originalPowerProfile,newPowerProfile) ) {

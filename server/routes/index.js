@@ -10,7 +10,7 @@ const userRoute = require('./userRoute');
  * -------------- POST ROUTES ----------------
  */
 
- router.post('/login', passport.authenticate('local', { failureRedirect: '/login-failure', successRedirect: 'login-success' }));
+ router.post('/login',passport.authenticate('local'),(req,res)=>res.send(req.user))
 
  
  router.post('/register', (req, res, next) => {
@@ -82,7 +82,6 @@ router.get('/protected-route', isAuth, (req, res, next) => {
 // Visiting this route logs the user out
 router.get('/logout', (req, res, next) => {
     req.logout();
-    res.redirect('/protected-route');
 });
 
 router.get('/login-success', (req, res, next) => {

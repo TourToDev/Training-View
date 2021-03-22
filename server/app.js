@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-var passport = require('passport');
-var crypto = require('crypto');
-var routes = require('./routes');
+const passport = require('passport');
+const crypto = require('crypto');
+const routes = require('./routes');
 const connection = require('./config/database');
-
+const cors = require("cors");
+const morgan = require('morgan');
 // Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require('connect-mongo')(session);
 
@@ -18,6 +19,15 @@ require('dotenv').config();
 
 // Create the Express application
 var app = express();
+
+app.use(morgan());
+
+app.use(cors(
+    {
+        origin:"http://localhost:8080",
+        credentials:true,
+    }
+))
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
