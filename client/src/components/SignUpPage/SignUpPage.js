@@ -53,9 +53,20 @@ const SignupForm = () => {
         }}
     >   
         <Form>
-            <label htmlFor="email">Email Address</label>
-            <Field name="email" type="email" />
-            <ErrorMessage name="email" />
+            <Field name="email" type="email" placeholder="Enter Your Email"/>
+            <span className="error">
+                <ErrorMessage name="email" />
+            </span>
+
+            <Field name="uname" type="text" placeholder="Enter Your Username"/>
+            <span className="error">
+                <ErrorMessage name="email" />
+            </span>
+
+            <Field name="realName" type="email" placeholder="Enter Your Username"/>
+            <span className="error">
+                <ErrorMessage name="email" />
+            </span>
 
             <label htmlFor="password">Password</label>
             <Field name="password" type="password" />
@@ -64,7 +75,6 @@ const SignupForm = () => {
             <label htmlFor="passwordCheck">Enter Password Again</label>
             <Field name="passwordCheck" type="password" />
             <ErrorMessage name="passwordCheck" />
-
 
             <button type="submit">Submit</button>
          </Form>
