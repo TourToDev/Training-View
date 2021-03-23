@@ -32,7 +32,7 @@ const LoginPage = ({setUser}) => {
       <div className="tv-boot-login">
         <h3 className="tv-boot-login-banner">Log In</h3>
         <div className="tv-boot-login-banner-2">
-          Or <a href="/register">create an account</a> 
+          Or <a href="/#/register">create an account</a> 
         </div>
 
         <div className="tv-boot-login-container">

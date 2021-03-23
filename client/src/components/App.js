@@ -46,13 +46,14 @@ const PrivateRoute = ({children, setUser, ...rest}) => {
   const auth = useContext(authContext);
   const history = useHistory();
   useEffect( () => {
-   axios.get("http://localhost:3000/user/basicInfo",{
+   axios({
      method:"get",
-     withCredentials:true,
-   }).then(res=>{
+     url:"http://localhost:3000/user/basicInfo",
+     withCredentials: true,
+   }).then(res =>{
      setUser(res.data);
-     history.push("/");
-   });
+     history.push("/")
+   }).catch(reason => console.log(reason))
   },[]);
 
   return (

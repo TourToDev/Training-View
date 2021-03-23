@@ -13,8 +13,9 @@ const userRoute = require('./userRoute');
  router.post('/login',passport.authenticate('local'),(req,res)=>res.send(req.user))
 
  
- router.post('/register', (req, res, next) => {
+ router.post('/register', (req, res) => {
     const requestBody = req.body;
+    console.log(requestBody)
     const saltHash = genPassword(requestBody.pw);
     const salt = saltHash.salt;
     const hash = saltHash.hash;
@@ -24,14 +25,15 @@ const userRoute = require('./userRoute');
         hash: hash,
         salt: salt,
         realName: requestBody.realName,
+        email:requestBody.email,
     });
 
     newUser.save()
         .then((user) => {
             console.log(user);
+            res.send("Created Successfully")
         });
 
-    res.redirect('/login');
  });
 
 router.use('/user',userRoute);

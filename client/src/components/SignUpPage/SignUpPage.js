@@ -4,7 +4,8 @@ import { useFormik, Formik, Field, Form, ErrorMessage } from 'formik';
 // A custom validation function. This must return an object
 
 // which keys are symmetrical to our values/initialValues
-
+import "../LoginPage/style.less";
+import { useHistory } from 'react-router';
 const validate = values => {
 
   const errors = {};
@@ -15,18 +16,26 @@ const validate = values => {
     errors.email = 'Invalid email address';
   }
 
-  if (!values.password) {
-    errors.password = 'Required';
-  } else if (values.password.length > 15) {
-    errors.password = 'Must be 15 characters or less';
+  if (!values.uname) {
+    errors.uname = "Required"
   }
 
-  if (!values.passwordCheck) {
-    errors.passwordCheck = 'Required';
-  } else if (values.passwordCheck.length > 20) {
-    errors.passwordCheck = 'Must be 20 characters or less';
-  } else if (values.passwordCheck !== values.password) {
-    errors.passwordCheck = 'Password Is Not The Same As Above'
+  if (!values.realName) {
+    errors.realName = "Required"
+  }
+
+  if (!values.pw) {
+    errors.pw = 'Required';
+  } else if (values.pw.length > 15) {
+    errors.pw = 'Must be 15 characters or less';
+  }
+
+  if (!values.pwCheck) {
+    errors.pwCheck = 'Required';
+  } else if (values.pwCheck.length > 20) {
+    errors.pwCheck = 'Must be 20 characters or less';
+  } else if (values.pwCheck !== values.pw) {
+    errors.pwCheck = 'Password Is Not The Same As Above'
   }
 
   return errors;
@@ -37,48 +46,71 @@ const SignupForm = () => {
   // Pass the useFormik() hook initial form values, a validate function that will be called when
   // form values change or fields are blurred, and a submit function that will
   // be called when the form is submitted
+  const history = useHistory();
+
   return (
-    <Formik
-        initialValues={{
-            passwordCheck: '',
-            email: '',
-        }}
-        validate={validate}
-        onSubmit={values => {
-            axios({
-              method:"post",
-              url:"http://localhost:3000/register",
-              data:values,
-            }).then( (res) => alert(res.data) )
-        }}
-    >   
-        <Form>
-            <Field name="email" type="email" placeholder="Enter Your Email"/>
-            <span className="error">
-                <ErrorMessage name="email" />
-            </span>
+    <div className="tv-boot">
+      <nav>
+        <h2 className="tv-boot-nav">Training View</h2>
+      </nav>
+      <div className="tv-boot-login">
+        <h3 className="tv-boot-login-banner">Create Your Free Account</h3>
 
-            <Field name="uname" type="text" placeholder="Enter Your Username"/>
-            <span className="error">
-                <ErrorMessage name="email" />
-            </span>
+        <div className="tv-boot-login-container">
+            <Formik
+                  initialValues={{
+                      email:'',
+                      uname:'',
+                      realName:'',
+                      pw:'',
+                      pwCheck: '',
+                  }}
+                  validate={validate}
+                  onSubmit={values => {
+                      axios({
+                        method:"post",
+                        url:"http://localhost:3000/register",
+                        data:values,
+                      }).then( (res) => {
+                        console.log(res.data)
+                        history.push("/login")
+                      } )
+                  }}
+              >   
+                  <Form>
+                      <Field name="email" type="email" placeholder="Enter Your Email"/>
+                      <span className="error">
+                          <ErrorMessage name="email" />
+                      </span>
 
-            <Field name="realName" type="email" placeholder="Enter Your Username"/>
-            <span className="error">
-                <ErrorMessage name="email" />
-            </span>
+                      <Field name="uname" type="text" placeholder="Enter Your Username"/>
+                      <span className="error">
+                          <ErrorMessage name="uname" />
+                      </span>
 
-            <label htmlFor="password">Password</label>
-            <Field name="password" type="password" />
-            <ErrorMessage name="password" />
+                      <Field name="realName" type="text" placeholder="Enter Your Real Name"/>
+                      <span className="error">
+                          <ErrorMessage name="realName" />
+                      </span>
 
-            <label htmlFor="passwordCheck">Enter Password Again</label>
-            <Field name="passwordCheck" type="password" />
-            <ErrorMessage name="passwordCheck" />
+                      <Field name="pw" type="password" placeholder="Enter Your Password" />
+                      <span className="error">
+                          <ErrorMessage name="pw" />
+                      </span>
 
-            <button type="submit">Submit</button>
-         </Form>
-    </Formik>
+                      <Field name="pwCheck" type="password" placeholder="Enter Your Password Again"/>
+                      <span className="error">
+                          <ErrorMessage name="pwCheck" />
+                      </span>
+
+                      <button type="submit">Submit</button>
+                  </Form>
+              </Formik>
+        </div>
+
+       </div>
+
+    </div>   
   );
 };
 

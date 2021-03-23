@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Layout, Menu, Breadcrumb } from 'antd';
 import "./index.less";
 const { Header, Content, Footer } = Layout;
+import {authContext} from '../App';
+import axios from 'axios';
 
 export default function TrainingViewApp() {
+    const auth = useContext(authContext);
+
     return (
         <div>
             <Layout className="layout">
@@ -21,7 +25,9 @@ export default function TrainingViewApp() {
                     <Breadcrumb.Item>List</Breadcrumb.Item>
                     <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
-                <div className="site-layout-content">Content</div>
+                <div className="site-layout-content">
+                    <button onClick={()=>axios.get("http://localhost:3000/user/basicInfo",{withCredentials:true}).then(res => console.log(res))}>Fetch Basic</button>                
+                </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             </Layout>
