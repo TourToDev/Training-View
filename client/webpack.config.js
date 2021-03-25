@@ -11,6 +11,9 @@ module.exports = {
     devServer: {
         contentBase: "./dist",
         hot: true,
+        proxy: {
+            '/user': 'http://localhost:3000',
+          },
     },
     devtool: "source-map",
     module:{

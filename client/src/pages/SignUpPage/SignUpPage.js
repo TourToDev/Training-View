@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useFormik, Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 // A custom validation function. This must return an object
 
 // which keys are symmetrical to our values/initialValues

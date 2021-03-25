@@ -1,0 +1,57 @@
+.tv-app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background-color: black;
+    padding-left: 0;
+    padding-right: 0.75em;
+
+    &-logo {
+        color: white;
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 1.2em;
+        font-style: italic;
+        font-weight: bold;
+        background-color: #0e355d;
+        padding: 0.3em;
+    }
+
+
+    & span {
+        margin-top: 0;
+    }
+
+    &  a {
+        margin-top: 0;
+        display: inline-block;
+        color: white;
+        margin-left: 0.5em;
+        text-align: center;
+        width: 5em;
+    }
+
+    &-selected {
+        border-bottom: 3px solid #fff;
+    }
+
+    &-userinfo {
+        margin-top: 0;
+        cursor: pointer;
+
+        &:after {
+            content: '';
+            display: inline-block;
+            width: 0.5em;
+            height: 0.5em;
+            margin: 0.2em 0.4em;
+            padding: 0;
+            border: 5px solid white;
+            border-width: 0 3px 3px 0;
+            background: transparent;
+            transform: rotate(45deg);
+          }
+    }
+}
+

@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-import LoginPage from './LoginPage/LoginPage';
-import SignUpPage from './SignUpPage/SignUpPage'
-import TraingingViewApp from '../components/TrainingViewApp/TrainingViewApp';
+import store from "./store";
+import {Provider} from 'react-redux'
+import LoginPage from './pages/LoginPage/LoginPage';
+import SignUpPage from './pages/SignUpPage/SignUpPage'
+import TraingingViewApp from './pages/TrainingViewApp/TrainingViewApp';
 
 import {
     BrowserRouter as Router,
@@ -13,7 +15,7 @@ import {
     useHistory
   } from "react-router-dom";
 
-import "../styles/index.less";
+import "./styles/index.less";
 import axios from 'axios';
 
 // Detect if user has login yes: send to / the app, no: send to /login
@@ -24,6 +26,7 @@ const App = () => {
   const [user, setUser] = useState(false);
 
   return (
+    <Provider store={store}>
       <HashRouter>
         <authContext.Provider value={{user:user}}>
           <Switch>
@@ -39,6 +42,7 @@ const App = () => {
           </Switch>
         </authContext.Provider>
       </HashRouter>
+    </Provider>
   )  
 }
 

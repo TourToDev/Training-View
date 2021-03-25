@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { useFormik, Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 import axios from "axios";
 import './style.less';
-import {authContext} from '../App';
 import { useHistory } from 'react-router';
 
 
