@@ -2,14 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const crypto = require('crypto');
 const routes = require('./routes');
 const connection = require('./config/database');
 const cors = require("cors");
-const morgan = require('morgan');
 // Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require('connect-mongo')(session);
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -19,9 +17,9 @@ const cookieParser = require("cookie-parser")
 require('dotenv').config();
 
 // Create the Express application
-var app = express();
+const app = express();
 
-app.use(morgan());
+app.use(cookieParser());
 
 app.use(cors(
     {
@@ -43,11 +41,12 @@ const sessionStore = new MongoStore({ mongooseConnection: connection, collection
 
 app.use(session({
     secret: process.env.SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     store: sessionStore,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 ,
+        secure:false,
     }
 }));
 
@@ -67,6 +66,8 @@ app.use(passport.session());
 //     console.log(req.user);
 //     next();
 // });
+
+app.use(express.static("./public"))
 
 /**
  * -------------- ROUTES ----------------

@@ -24,9 +24,7 @@ function getWorkoutObjectFromFile(fileData, FTP,workoutTimestamp) {
               
             } = fileData.activity.sessions[0];
       
-            const workoutBasic = {
-              workoutTimestamp,
-    
+            const workoutBasic = {    
               FTP:FTP,
               duration,
               distance,
@@ -58,7 +56,7 @@ function getWorkoutObjectFromFile(fileData, FTP,workoutTimestamp) {
       
         // collect the workout detail information into an array
         // records that was too big may break your server
-        const workout = createWorkout(workoutBasic,workoutPower,workoutDetail);
+        const workout = createWorkout(workoutTimestamp,workoutBasic,workoutPower,workoutDetail);
 
         return workout;
 }

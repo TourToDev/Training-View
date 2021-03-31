@@ -5,7 +5,7 @@ const connection = require('../config/database');
 const User = connection.models.User;
 const isAuth = require('./authMiddleware').isAuth;
 const userRoute = require('./userRoute');
-
+const path = require("path");
 /**
  * -------------- POST ROUTES ----------------
  */
@@ -42,8 +42,9 @@ router.use('/user',userRoute);
  * -------------- GET ROUTES ----------------
  */
 
+
 router.get('/', (req, res, next) => {
-    res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>');
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 // When you visit http://localhost:3000/login, you will see "Login Page"
@@ -55,7 +56,6 @@ router.get('/login', (req, res, next) => {
     <br><br><input type="submit" value="Submit"></form>';
 
     res.send(form);
-
 });
 
 // When you visit http://localhost:3000/register, you will see "Register Page"
@@ -84,6 +84,7 @@ router.get('/protected-route', isAuth, (req, res, next) => {
 // Visiting this route logs the user out
 router.get('/logout', (req, res, next) => {
     req.logout();
+    res.send("Log out")
 });
 
 router.get('/login-success', (req, res, next) => {

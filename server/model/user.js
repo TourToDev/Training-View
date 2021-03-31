@@ -83,9 +83,18 @@ const UserSchema = new mongoose.Schema({
         },
     },
     workoutsCollection:[{
+        workoutTimestamp: Number,
+        planned:{
+            type:String,
+            duration:Number,
+            elevation_gain:Number,
+            distance:Number,
+            avg_power:Number,
+            TSS:Number,
+            IF:Number,
+        },
         basic:{
             FTP:Number,
-            workoutTimestamp: String,
             duration:Number,
             elevation_gain:Number,
             distance:Number,
@@ -96,7 +105,6 @@ const UserSchema = new mongoose.Schema({
             avg_heart_rate:Number,
             max_heart_rate:Number,
         },
-
         power:{
             avg_power:Number,
             max_power:Number,

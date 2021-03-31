@@ -7,12 +7,13 @@ const FitParser = require('fit-file-parser').default;
 const fileUpload = require("express-fileupload");
 const createWorkout = require("../model/createWorkout");
 const getWorkoutObjectFromFile = require("../lib/getWorkoutObjectFromFile");
-
+const {weekTimeRange} = require("../lib/timeUtils")
 
 //get an user's basic information
 router.get("/basicInfo",isAuth,(req,res)=>{
     res.send({
         username:req.user.username,
+        realName:req.user.realName,
         avatar:req.user.avatar,
         gender:req.user.gender,
         age:req.user.age,
@@ -51,6 +52,41 @@ router.get("/workoutCollection/basic", isAuth, async (req, res) => {
    res.send(basicWorkout);        
 });
 
+router.get("/workoutCollection/weeklyWorkout",isAuth, async (req, res) => {
+    const userDoc = await User.findOne({username:req.user.username});
+    const [weekStart, weekEnd] = weekTimeRange();
+    console.log({
+        weekStart,
+        weekEnd,
+    })
+    // const today = new Date();
+    
+    // let dayFromMonday = 0;
+    // if (todayInWeek === 0) {
+    //     dayFromMonday = 6;
+    // } else {
+    //     dayFromMonday = today.getDay() - 1;
+    // }
+
+    // today.setDate(today.getDate() - dayFromMonday);
+    // today.setHours(0,0,0,0);
+
+    // const weekStart = today.getTime();
+    // const weekEnd = weekStart + (7 * 24 * 60 * 60 * 1000);
+
+    const weeklyWorkouts = userDoc.workoutsCollection.filter((workout) => ((workout.workoutTimestamp >= weekStart && workout.workoutTimestamp <=weekEnd)? true : false) );
+    
+    res.send(
+        weeklyWorkouts.map( (workout => ({
+            workoutId:workout.id,
+            workoutTimestamp:workout.workoutTimestamp,
+            basic:workout.basic,
+            power:workout.power,
+        })) )
+    )
+    
+})
+
 //save a workout's basic information into the database
 router.post("/addWorkout/basic",isAuth, async (req, res) => {
     const basicWorkoutInfo = req.body.basic;
@@ -87,7 +123,7 @@ router.use(fileUpload())
 router.post("/uploadWorkout", isAuth, (req,res)=>{
  
     const workFile = req.files.workoutfile.data;
-
+    console.log("recived a workout file")
     const workoutTimestamp = parseInt(req.body.workoutTimestamp);
 
     //   Create a FitParser instance (options argument is optional)

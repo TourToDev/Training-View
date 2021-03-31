@@ -6,6 +6,8 @@ import "./index.less";
 const { Header, Content, Footer } = Layout;
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
+import { Route, Switch } from 'react-router';
+import MainBroad from '../../components/MainBroad/MainBroad';
 export default function TrainingViewApp() {
     const dispatch = useDispatch();
     const basicInfo = useSelector( state => state.user.basicInfo );
@@ -16,6 +18,17 @@ export default function TrainingViewApp() {
     return (
         <div className="tv-app">
            <Navbar />
+           <main className="tv-app-main">
+                <Switch>
+                    <Route path="/calendar">
+
+                    </Route>
+
+                    <Route path="/">
+                        <MainBroad/>
+                    </Route>
+                </Switch>
+           </main>
         </div>
     )
 }
