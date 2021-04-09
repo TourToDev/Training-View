@@ -1,8 +1,9 @@
 const {calculateNormalizedPower, calculateIntensityFactor, calculateTrainingStressScore} = require("../lib/powerAnalysisUtils");
 //compose three cat of information into the workout object
-const createWorkout = (workoutTimestamp,basic={}, power={}, detail=[]) => {
+const createWorkout = (workoutTimestamp,basic={}, power={}, detail=[], status) => {
     const workoutObject = {
         workoutTimestamp,
+        status,
         basic:{...basic},
         power:{...power},
         detail:detail,

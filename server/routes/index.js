@@ -1,21 +1,25 @@
 const router = require('express').Router();
 const passport = require('passport');
-const genPassword = require('../lib/passwordUtils').genPassword;
+const path = require("path");
+
 const connection = require('../config/database');
 const User = connection.models.User;
+
+const genPassword = require('../lib/passwordUtils').genPassword;
 const isAuth = require('./authMiddleware').isAuth;
 const userRoute = require('./userRoute');
-const path = require("path");
+const basicInfoRoute = require("./basicInfoRoute");
+const workoutsCollectionsRoute = require("./workoutsCollectionRoute");
+
+
 /**
  * -------------- POST ROUTES ----------------
  */
 
- router.post('/login',passport.authenticate('local'),(req,res)=>res.send(req.user))
+router.post('/login',passport.authenticate('local'),(req,res)=>res.send(req.user))
 
- 
- router.post('/register', (req, res) => {
+router.post('/register', (req, res) => {
     const requestBody = req.body;
-    console.log(requestBody)
     const saltHash = genPassword(requestBody.pw);
     const salt = saltHash.salt;
     const hash = saltHash.hash;
@@ -33,10 +37,13 @@ const path = require("path");
             console.log(user);
             res.send("Created Successfully")
         });
-
  });
 
 router.use('/user',userRoute);
+
+router.use('/userBasic', basicInfoRoute)
+
+router.use('/workoutsCollection',workoutsCollectionsRoute)
 
  /**
  * -------------- GET ROUTES ----------------

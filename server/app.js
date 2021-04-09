@@ -1,11 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const routes = require('./routes');
 const connection = require('./config/database');
 const cors = require("cors");
-// Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require('connect-mongo')(session);
 const cookieParser = require("cookie-parser");
 
@@ -16,10 +14,8 @@ const cookieParser = require("cookie-parser");
 // Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
 require('dotenv').config();
 
-// Create the Express application
 const app = express();
 
-app.use(cookieParser());
 
 app.use(cors(
     {
@@ -27,7 +23,8 @@ app.use(cors(
         credentials:true,
         
     }
-))
+));
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -38,6 +35,12 @@ app.use(express.urlencoded({extended: true}));
  */
 
 const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions' });
+
+app.use((req,res,next)=>{
+console.log("Before session middleware")
+console.log(req.session);
+next()
+})
 
 app.use(session({
     secret: process.env.SECRET,
@@ -50,6 +53,14 @@ app.use(session({
     }
 }));
 
+app.use((req,res,next)=>{
+    console.log("After session middleware")
+    console.log(req.session);
+    console.log("Before passport session");
+    console.log(req.user? "User is added":"No user");
+    console.log("User auth?"+req.isAuthenticated())
+    next()
+});
 
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
@@ -58,8 +69,17 @@ app.use(session({
 // Need to require the entire Passport config module so app.js knows about it
 require('./config/passport');
 
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req,res,next)=>{
+    console.log("After passport session")
+    console.log("User auth?"+req.isAuthenticated())
+
+    console.log(req.user? "User is added":"No user");
+    next();
+});
 
 // app.use((req, res, next) => {
 //     console.log(req.session);
@@ -69,18 +89,8 @@ app.use(passport.session());
 
 app.use(express.static("./public"))
 
-/**
- * -------------- ROUTES ----------------
- */
-
-// Imports all of the routes from ./routes/index.js
 app.use(routes);
 
-/**
- * -------------- SERVER ----------------
- */
-
-// Server listens on http://localhost:3000
-app.listen(3000,()=>{
+app.listen(3000, ()=>{
     console.log("Backend has already start");
 });

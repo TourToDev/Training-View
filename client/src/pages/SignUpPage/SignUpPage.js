@@ -1,11 +1,10 @@
 import React from 'react';
 import axios from 'axios';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-// A custom validation function. This must return an object
 
-// which keys are symmetrical to our values/initialValues
 import "../LoginPage/style.less";
 import { useHistory } from 'react-router';
+
 const validate = values => {
 
   const errors = {};

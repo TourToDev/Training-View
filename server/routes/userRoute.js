@@ -1,13 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const fileUpload = require("express-fileupload");
+const FitParser = require('fit-file-parser').default;
+
 const isAuth = require('./authMiddleware').isAuth;
 const connection = require('../config/database');
-const User = connection.models.User;
-const FitParser = require('fit-file-parser').default;
-const fileUpload = require("express-fileupload");
 const createWorkout = require("../model/createWorkout");
+
 const getWorkoutObjectFromFile = require("../lib/getWorkoutObjectFromFile");
-const {weekTimeRange} = require("../lib/timeUtils")
+const {weekTimeRange} = require("../lib/timeUtils");
+
+const User = connection.models.User;
+
 
 //get an user's basic information
 router.get("/basicInfo",isAuth,(req,res)=>{
@@ -37,7 +41,7 @@ router.post("/updateBasicInfo",isAuth, async (req,res)=>{
 });
 
 //get an user's workout collection with basic data
-router.get("/workoutCollection/basic", isAuth, async (req, res) => {
+router.get("/workoutsCollection/basic", isAuth, async (req, res) => {
    const userDoc = await  User.findOne({username:req.user.username});
    const basicWorkout = userDoc.workoutsCollection.map( 
        (workout) => {
@@ -52,43 +56,97 @@ router.get("/workoutCollection/basic", isAuth, async (req, res) => {
    res.send(basicWorkout);        
 });
 
-router.get("/workoutCollection/weeklyWorkout",isAuth, async (req, res) => {
+//get an particular workout's detailed data
+router.get("/workoutsCollection/detail/:workoutId", isAuth, async (req,res)=>{
+    const workoutId = req.params.workoutId;
+    
+    const userDoc = await User.findOne({username:req.user.username});
+
+    const workout = userDoc.workoutsCollection.find((workout)=>workout.id===workoutId);
+
+    res.send(workout.detail? workout.detail : "This Workout Has No Detail");
+
+})
+
+router.get("/workoutsCollection/weeklyWorkout",isAuth, async (req, res) => {
     const userDoc = await User.findOne({username:req.user.username});
     const [weekStart, weekEnd] = weekTimeRange();
     console.log({
         weekStart,
         weekEnd,
     })
-    // const today = new Date();
+
+    const weeklyWorkouts = userDoc.workoutsCollection
+                                    .filter((workout) => ((workout.workoutTimestamp >= weekStart && workout.workoutTimestamp <=weekEnd)? true : false) )
+                                    .map( workout => ({
+                                        workoutId:workout.id,
+                                        status: workout.status,
+                                        workoutTimestamp:workout.workoutTimestamp,
+                                        weekDay:new Date(workout.workoutTimestamp).getDay(),
+                                        basic:workout.basic,
+                                        power:workout.power,
+                                    }) 
+                                  )
     
-    // let dayFromMonday = 0;
-    // if (todayInWeek === 0) {
-    //     dayFromMonday = 6;
-    // } else {
-    //     dayFromMonday = today.getDay() - 1;
-    // }
+    let weekInfo = [{
+            day: "Mon",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[]
+        },
+        {
+            day: "Tue",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+        {
+            day: "Wed",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+        {
+            day: "Thur",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+        {
+            day: "Fri",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+        {
+            day: "Sat",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+        {
+            day: "Sun",
+            // status:["not-scheduled","scheduled","completed"]
+            workouts:[],
+        },
+    ];
 
-    // today.setDate(today.getDate() - dayFromMonday);
-    // today.setHours(0,0,0,0);
-
-    // const weekStart = today.getTime();
-    // const weekEnd = weekStart + (7 * 24 * 60 * 60 * 1000);
-
-    const weeklyWorkouts = userDoc.workoutsCollection.filter((workout) => ((workout.workoutTimestamp >= weekStart && workout.workoutTimestamp <=weekEnd)? true : false) );
-    
-    res.send(
-        weeklyWorkouts.map( (workout => ({
+    weeklyWorkouts.forEach( workout => {
+        const weekIndex = workout.weekDay === 0? 6 : workout.weekDay - 1;
+        weekInfo[weekIndex].workouts.push({
+            status:workout.status,
             workoutId:workout.id,
             workoutTimestamp:workout.workoutTimestamp,
+            weekDay:new Date(workout.workoutTimestamp).getDay(),
             basic:workout.basic,
             power:workout.power,
-        })) )
+        })
+    } )
+    
+    res.send(
+        {
+            weekInfo,
+        }
     )
     
 })
 
 //save a workout's basic information into the database
-router.post("/addWorkout/basic",isAuth, async (req, res) => {
+router.post("/workoutsCollection/add/basic",isAuth, async (req, res) => {
     const basicWorkoutInfo = req.body.basic;
     const basicPowerInfo = req.body.power;
 
@@ -103,27 +161,13 @@ router.post("/addWorkout/basic",isAuth, async (req, res) => {
     res.send("Basic Power Info Saved")
 });
 
-//get an particular workout's detailed data
-router.get("/workoutCollection/detail/:workoutId", isAuth, async (req,res)=>{
-    const workoutId = req.params.workoutId;
-    
-    const userDoc = await User.findOne({username:req.user.username});
-
-    const workout = userDoc.workoutsCollection.find((workout)=>workout.id===workoutId);
-
-    res.send(workout.detail? workout.detail : "This Workout Has No Detail");
-
-})
-
 // upload an fit file and save the interpreted data into the 
 // database and return an object contains this workout's entire data
-
 router.use(fileUpload())
 
-router.post("/uploadWorkout", isAuth, (req,res)=>{
- 
+router.post("/workoutsCollection/add/upload", isAuth, (req,res)=>{
     const workFile = req.files.workoutfile.data;
-    console.log("recived a workout file")
+
     const workoutTimestamp = parseInt(req.body.workoutTimestamp);
 
     //   Create a FitParser instance (options argument is optional)
@@ -144,7 +188,7 @@ router.post("/uploadWorkout", isAuth, (req,res)=>{
         const currentFTP = req.user.power.FTP;
 
         //construct the workout object from fileData and other information
-        const workout = getWorkoutObjectFromFile(data,currentFTP,workoutTimestamp);
+        const workout = getWorkoutObjectFromFile(data, currentFTP, workoutTimestamp, "completed");
   
         workout.updateNP();
         workout.updateIF();
@@ -165,7 +209,8 @@ router.post("/uploadWorkout", isAuth, (req,res)=>{
         });
 
         res.send("Workout Saved");
-    })
+    });
+
 })
 
 router.delete("/deleteWorkoutsCollection",async (req,res) => {

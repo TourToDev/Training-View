@@ -1,6 +1,6 @@
 const createWorkout = require("../model/createWorkout");
 
-function getWorkoutObjectFromFile(fileData, FTP,workoutTimestamp) {
+function getWorkoutObjectFromFile(fileData, FTP, workoutTimestamp, status) {
             //construct the workout object and calculate the workout specific data
             let workoutLap1 = fileData.activity.sessions[0].laps[0];
   
@@ -56,7 +56,7 @@ function getWorkoutObjectFromFile(fileData, FTP,workoutTimestamp) {
       
         // collect the workout detail information into an array
         // records that was too big may break your server
-        const workout = createWorkout(workoutTimestamp,workoutBasic,workoutPower,workoutDetail);
+        const workout = createWorkout(workoutTimestamp,workoutBasic,workoutPower,workoutDetail,status);
 
         return workout;
 }

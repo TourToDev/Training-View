@@ -17,4 +17,43 @@
         margin-top: 0;
     }
 
+    &-item {
+        cursor: pointer;
+    }
+
+}
+
+.ant-list-item {
+    padding: 16px 10px !important;
+}
+.ant-list-split .ant-list-item {
+    border: 1px solid lightgray;
+
+    &:hover {
+        border: 1px solid gray;
+    }
+}
+
+.ant-list-split .ant-list-item:last-child {
+    border: 1px solid lightgray;
+    border-top: none;
+
+    &:hover {
+        border: 1px solid gray;
+    }
+}
+
+.ant-list-item + .ant-list-item{
+    border-top: none;
+}
+
+.plus-block {
+    border: 2px dashed lightblue;
+    width: 70%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.plus-block:hover {
+    border-color: blue;
 }

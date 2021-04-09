@@ -1,17 +1,20 @@
-import React from 'react'
-import {List} from 'antd';
-import {TagOutlined} from '@ant-design/icons';
 import "./index.less"
 
-const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-  ];
+import React, {useEffect} from 'react'
+import {List} from 'antd';
+import {TagOutlined} from '@ant-design/icons';
+import WeeklyListItem from './WeeklyListItem';
+import {useSelector, useDispatch} from "react-redux";
+
+import {fetchWeeklyWorkouts} from "../../features/workoutsCollection/workoutsCollectionSlice"
 
 export default function WeeklyList() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchWeeklyWorkouts());
+    }, [])
+    const weeklyWorkouts = useSelector(state => state.workoutsCollection.weeklyWorkouts)
+    const weeklyWorkoutsLoading = useSelector( state => state.workoutsCollection.weeklyWorkoutsLoading )
     return (
         <div className="tv-app-weeklylist">
             <div className="tv-app-weeklylist-planheader">
@@ -21,12 +24,10 @@ export default function WeeklyList() {
                 </span>
             </div>
             <List className="tv-app-weeklylist-list"
+                loading={weeklyWorkoutsLoading}
                 size="large"
-                header={<div>Header</div>}
-                footer={<div>Footer</div>}
-                bordered
-                dataSource={data}
-                renderItem={item => <List.Item>{item}</List.Item>}
+                dataSource={weeklyWorkouts}
+                renderItem={item => <WeeklyListItem item={item}/>}
             />
         </div>
     )

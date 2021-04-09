@@ -84,6 +84,10 @@ const UserSchema = new mongoose.Schema({
     },
     workoutsCollection:[{
         workoutTimestamp: Number,
+        status: {
+            type: String,
+            default:"",
+        },
         planned:{
             type:String,
             duration:Number,
@@ -166,7 +170,7 @@ UserSchema.methods.updatePowerProfile = async function (workoutDetail) {
             maxAvg = maxAvg > avg? maxAvg : avg;
         }
 
-        return maxAvg;
+        return parseInt(maxAvg);
     }
 
     const getPowerProfile = (workoutDetail) => {
