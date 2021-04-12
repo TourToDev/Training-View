@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { usePopper } from 'react-popper';
 import {useSelector} from "react-redux";
-import { Menu, Dropdown, Modal } from 'antd';
+import { Menu, Dropdown } from 'antd';
 import { Link } from "react-router-dom";
 import AriaModal from 'react-aria-modal';
 import "./index.less";
 import SettingModal from "../SettingModal/SettingModal";
-
+import Modal from "../Modal/Modal";
 
   
 
@@ -37,10 +37,17 @@ export default function UserInfo() {
                     <span>{basicInfo.realName}</span>
                 </span>
             </Dropdown>
-            <SettingModal visible={modalActive} onCancel={()=>setModalActive(false)}>
+            {/* <SettingModal 
+              visible={modalActive}
+              title="Setting"  
+              onCancel={()=>setModalActive(false)}
+            >
+              
                     Setting Content
-            </SettingModal>
-
+            </SettingModal> */}
+            <Modal title="Title" visible={modalActive} onClose={() => setModalActive(false)}>
+              Content
+            </Modal>
         </>
     )
 }

@@ -25,29 +25,8 @@ export default function SettingModal(props) {
     const basicInfo = useSelector(state => state.user.basicInfo)
 
     return (
-        <Modal {...props} title="Setting" width="1000"  okText="Save">
-            <div className="tv-app-setting">
-                <Menu
-                    className="tv-app-setting-menu"
-                    defaultSelectedKeys={['personal']}
-                    onClick={(e) => setSelected(e.key)}
-                    style={{width:128}}
-                >
-
-                    <Menu.Item key="personal">
-                        Personal
-                    </Menu.Item>
-                    <Menu.Item key="power">
-                        Power
-                    </Menu.Item>
-                </Menu>
-
-                <div className="tv-app-setting-form">
-                    <form>
-                        <input value={basicInfo.username}/>
-                    </form>
-                </div>
-            </div>
+        <Modal {...props}  width="1000"  okText="Save">
+           
         </Modal>
     )
 }

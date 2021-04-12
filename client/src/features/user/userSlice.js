@@ -37,14 +37,14 @@ export const userSlice = createSlice({
     },
   },
   reducers: {
-    usersLoading(state, action) {
+    usersBasicLoading(state, action) {
       if (!state.loading) {
         state.loading = true;
       }
     },
-    usersReceived(state, action) {
+    usersBasicReceived(state, action) {
       if (state.loading) {
-          state.loading = true;
+          state.loading = false;
           state.basicInfo = action.payload
       }
     },
@@ -54,18 +54,65 @@ export const userSlice = createSlice({
     userUpdated(state, loading) {
 
     },
+    powerInfoLoading(state, action) {
+      if (!state.loading) {
+        state.loading = true;
+      }
+    },
+    powerInfoReceived(state, action) {
+      if (state.loading) {
+          state.loading = false;
+          state.powerInfo = action.payload
+      }
+    },
   }
 });
 
-
-
-// Action creators are generated for each case reducer function
-export const { usersLoading, usersReceived } = userSlice.actions;
+export const { 
+  usersBasicLoading, 
+  usersBasicReceived,
+  powerInfoLoading,
+  powerInfoReceived,
+  usersUpdating,
+  userUpdated,
+ } = userSlice.actions;
 
 export const fetchUsers = () => async dispatch => {
-    dispatch(usersLoading())
-    const response = await axios.get("/user/basicInfo",{withCredentials:true});
-    dispatch(usersReceived(response.data))
-  }
+    dispatch(usersBasicLoading());
+    const basic = await fetch(
+      "http://localhost:3000/userBasic/basicInfo",
+      {
+        mode:"cors",
+        credentials:"include"
+      }
+    );
+    const basicData = await basic.json();
+    dispatch(usersBasicReceived(basicData));
+
+    dispatch(powerInfoLoading());
+    const power =  await fetch(
+      "http://localhost:3000/userBasic/powerInfo",
+      {
+        mode:"cors",
+        credentials:"include"
+      }
+    );
+    const powerData = await power.json();
+    dispatch(powerInfoReceived(powerData));
+};
+
+export const updateUser = data => async dispatch => {
+    dispatch(usersUpdating());
+    const result = await fetch(
+      "http://localhost:3000/userBasic/basicInfo",
+      {
+        mode:"cors",
+        credentials:"include",
+        method:"post",
+        body:data,
+      }
+    );
+    result==="successful"? dispatch(userUpdated(data)): null;
+};
 
 export default userSlice.reducer;

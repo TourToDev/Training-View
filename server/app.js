@@ -36,12 +36,6 @@ app.use(express.urlencoded({extended: true}));
 
 const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions' });
 
-app.use((req,res,next)=>{
-console.log("Before session middleware")
-console.log(req.session);
-next()
-})
-
 app.use(session({
     secret: process.env.SECRET,
     resave: true,
@@ -53,15 +47,6 @@ app.use(session({
     }
 }));
 
-app.use((req,res,next)=>{
-    console.log("After session middleware")
-    console.log(req.session);
-    console.log("Before passport session");
-    console.log(req.user? "User is added":"No user");
-    console.log("User auth?"+req.isAuthenticated())
-    next()
-});
-
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
@@ -72,14 +57,6 @@ require('./config/passport');
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use((req,res,next)=>{
-    console.log("After passport session")
-    console.log("User auth?"+req.isAuthenticated())
-
-    console.log(req.user? "User is added":"No user");
-    next();
-});
 
 // app.use((req, res, next) => {
 //     console.log(req.session);

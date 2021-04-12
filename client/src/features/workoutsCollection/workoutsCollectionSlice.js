@@ -43,10 +43,11 @@ export const workoutsCollectionSlice = createSlice(
         },
         reducers:{
             workoutsBasicLoading(state, action){
-                
+                state.workoutsBasicLoading = state.workoutsBasicLoading? false : true;
             },
             workoutsBasicLoaded(state, action){
-
+                state.workoutsBasicLoading = state.workoutsBasicLoading? false : true;
+                state.workoutsCollection = action.payload;
             },
             weeklyWorkoutsLoading(state,action){
                 if (!state.weeklyWorkoutsLoading) {
@@ -70,14 +71,29 @@ export const {
     workoutsBasicLoading, 
     workoutsBasicLoaded, 
     weeklyWorkoutsLoading, 
-    weeklyWorkoutsLoaded} = workoutsCollectionSlice.actions;
+    weeklyWorkoutsLoaded
+} = workoutsCollectionSlice.actions;
+
+export const fetchBasicWorkouts = () => async dispatch => {
+    dispatch(workoutsBasicLoading());
+    const res = await fetch(
+        "http://localhost:3000/workoutsCollection/basic",
+        {
+            mode:"cors",
+            credentials:"include"
+        });
+    const data = await res.json();
+    dispatch(workoutsBasicLoaded(data));
+}
 
 export const fetchWeeklyWorkouts = () => async (dispatch) => {
     dispatch(weeklyWorkoutsLoading());
     const res = await fetch(
         "http://localhost:3000/workoutsCollection/weeklyWorkout",
-        {mode:"cors",
-         credentials:"include"});
+        {
+            mode:"cors",
+            credentials:"include"
+    });
     const data = await res.json();
     dispatch(weeklyWorkoutsLoaded(data.weekInfo))
 }

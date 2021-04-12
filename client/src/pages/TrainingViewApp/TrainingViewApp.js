@@ -5,11 +5,14 @@ import "./index.less";
 import Navbar from '../../components/Navbar/Navbar';
 import { Route, Switch } from 'react-router';
 import MainBroad from '../../components/MainBroad/MainBroad';
+import { fetchBasicWorkouts, fetchWeeklyWorkouts } from '../../features/workoutsCollection/workoutsCollectionSlice';
 
 export default function TrainingViewApp() {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchUsers())
+        dispatch(fetchUsers());
+        dispatch(fetchBasicWorkouts());
+        dispatch(fetchWeeklyWorkouts());
     }, [])
     return (
         <div className="tv-app">
