@@ -2,15 +2,23 @@ import "./index.less";
 import React from 'react'
 import ReactDOM from 'react-dom';
 
-export default function Modal({visible,onClose,title,children,footer}) {
-    const visibility = visible? "initial":"hidden";
+export default function Modal
+    ({
+        visible,
+        onClose,
+        title,
+        children,
+        footer,
+        bodyStyle
+    }) {
 
+    const visibility = visible? "initial":"hidden";    
 
     const modal =  (
         <div className="tv-modal" style={{visibility}}>
             <div className="tv-modal-backdrop"></div>
             <div className="tv-modal-container" onClick={(event)=>{event.stopPropagation(); onClose();}}>
-                <div className="tv-modal-body" onClick={(e) => e.stopPropagation()}>
+                <div className="tv-modal-body" style={bodyStyle} onClick={(e) => e.stopPropagation()}>
                     <div className="tv-modal-body-header">
                         <div>
                             {title}

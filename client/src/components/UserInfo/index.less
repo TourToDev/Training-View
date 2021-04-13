@@ -1,0 +1,56 @@
+.tv-usermodal-title{
+    font-size: 1em;
+    font-family: HelveticaNeueW01-55Roma;
+    font-weight: 400;
+    font-style: normal;
+
+    color: #636569;
+    line-height: 1;
+
+    margin: 9px 0 0 15px;
+}
+
+.tv-app-userinfo{
+    display: grid;
+    grid-template-columns: 2fr 10fr;
+    height: 100%;
+
+    &-sidebar {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        background-color: #ccc;
+        font-size: 00.875em;
+        & li {
+            list-style-type: none;
+            cursor: pointer;
+            margin: 2px 0;
+            color: #76787d;
+            padding: 5px 10px 5px 25px;
+        }
+
+        & li:first-of-type {
+            padding-top: 25px;
+        }
+
+        & li:hover {
+            color: black;
+        }
+
+        & .selected {
+            background-color: #e0dede;
+            color: #303030;
+            font-family: HelveticaNeueW01-75Bold;
+            font-weight: 400;
+        }
+
+    }
+
+    &-content {
+        padding: 0 30px;
+        background-color: #e0dede;
+        padding-top: 28px;
+    }
+
+}
+
