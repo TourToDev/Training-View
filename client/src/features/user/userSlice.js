@@ -10,6 +10,7 @@ export const userSlice = createSlice({
       username:"",
       realName:"",
       email:"",
+      gender:"",
       avatar:"",
       age:0,
       weight:0,
@@ -25,7 +26,7 @@ export const userSlice = createSlice({
         max20mins:0,
         max60mins:0,
       },
-      trainingZone:{
+      trainingZones:{
         activeRecovery:0,
         endurance:0,
         tempo:0,
@@ -49,10 +50,15 @@ export const userSlice = createSlice({
       }
     },
     usersUpdating(state,action) {
-      
+      if (!state.updating) {
+        state.updating = true;
+      }
     },
-    userUpdated(state, loading) {
-
+    userUpdated(state, action) {
+      if (state.updating) {
+        state.updating = false;
+        Object.assign(state.basicInfo,action.payload);
+      }
     },
     powerInfoLoading(state, action) {
       if (!state.loading) {
@@ -104,7 +110,7 @@ export const fetchUsers = () => async dispatch => {
 export const updateUser = data => async dispatch => {
     dispatch(usersUpdating());
     const result = await fetch(
-      "http://localhost:3000/userBasic/basicInfo",
+      "http://localhost:3000/userBasic/updateBasicInfo",
       {
         mode:"cors",
         credentials:"include",
@@ -112,7 +118,9 @@ export const updateUser = data => async dispatch => {
         body:data,
       }
     );
-    result==="successful"? dispatch(userUpdated(data)): null;
+    const resultText = await result.text();
+    console.log(resultText);
+    resultText==="Updated"? dispatch(userUpdated(data)): null;
 };
 
 export default userSlice.reducer;

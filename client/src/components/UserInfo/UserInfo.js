@@ -1,22 +1,27 @@
-import { useState } from "react";
-import { usePopper } from 'react-popper';
-import {useSelector} from "react-redux";
-import { Menu, Dropdown } from 'antd';
-import { Link } from "react-router-dom";
-import AriaModal from 'react-aria-modal';
+import { useState, useRef } from "react";
+import {useSelector, useDispatch} from "react-redux";
+import { Menu, Dropdown, Spin } from 'antd';
 import "./index.less";
-import SettingModal from "../SettingModal/SettingModal";
 import Modal from "../Modal/Modal";
 import HeaderText from "../HeaderText";
+import { Field, Form, Formik } from "formik";
+import Button from "../Button/Button";
+import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines, XAxis, YAxis} from 'react-vis';
+import { updateUser } from "../../features/user/userSlice";
+import { LoadingOutlined } from "@ant-design/icons";
 
   
 
 
 export default function UserInfo() {
-    const basicInfo = useSelector(state => state.user.basicInfo)
-
+    const user = useSelector(state => state.user)
+    const basicInfo = useSelector(state => state.user.basicInfo);
+    const powerInfo = useSelector(state => state.user.powerInfo);
+    const trainingZones = powerInfo.trainingZones;
     const [modalActive,setModalActive] = useState(false);
     const [selected, setSelected] = useState("personal")
+
+    const dispatch = useDispatch();
 
     const menu = (
         <Menu className="tv-app-dropdown">
@@ -34,28 +39,172 @@ export default function UserInfo() {
         Account Setting
       </h2>
     )
+    const formRef = useRef()
 
-    const personalInfo = (
-      <HeaderText>
-        Personal
-      </HeaderText>
+    const handleSubmit = () => {
+      if (formRef.current) {
+        formRef.current.handleSubmit()
+      }
+    }
+    const personalContent = (
+      <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }}/>} spinning={user.updating} >
+        <div className="tv-user-personal">
+          <HeaderText>
+            Personal
+          </HeaderText>
+          <h3>Personal Information</h3>
+          <Formik
+            innerRef={formRef}
+            enableReinitialize={true}
+            initialValues={{
+              realName:basicInfo.realName,
+              username:basicInfo.username,
+              email:basicInfo.email,
+              gender:basicInfo.gender,
+              age:basicInfo.age,
+              weight:basicInfo.weight
+            }}
+            onSubmit={
+              values => {
+                dispatch(updateUser(values));
+              }
+            }
+          >
+            <Form>
+              <div>
+                <label htmlFor="realName">First And Last Name: </label>
+                <Field name="realName" type="text" />
+              </div>
+
+              <div>
+                <label htmlFor="username">Username: </label>
+                <Field name="username" type="text" disabled/>
+              </div>
+
+              <div>
+                <label htmlFor="email">Email Address: </label>
+                <Field name="email" type="email" />
+              </div>
+              
+              <div>
+                <label htmlFor="gender">
+                  Gender:
+                </label>
+                <Field as="select" name="gender" >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </Field>
+              </div>
+
+              <div>
+                <label htmlFor="age">Age: </label>
+                <Field name="age" type="number" />
+              </div>
+
+              <div>
+                <label htmlFor="weight">Weight: </label>
+                <Field name="weight" type="number" />
+                <span>kg</span>
+              </div>
+              
+            </Form>
+          </Formik>
+        </div>
+      </Spin>
     )
+    const data = [
+      {x: 0, y: 8},
+      {x: 1, y: 5},
+      {x: 2, y: 4},
+      {x: 3, y: 9},
+      {x: 4, y: 1},
+      {x: 5, y: 7},
+      {x: 6, y: 6},
+      {x: 7, y: 3},
+      {x: 8, y: 2},
+      {x: 9, y: 0}
+    ];
 
-    const powerInfo = (
-      <HeaderText>
-        Power
-      </HeaderText>
+    const powerContent = (
+      <div className="tv-user-power">
+        <HeaderText>
+          Power
+        </HeaderText>
+        <h3>Power Information</h3>
+        <Formik
+          innerRef={formRef}
+          enableReinitialize={true}
+          initialValues={{
+            FTP:powerInfo.FTP,
+          }}
+        >
+          <fieldset>
+            <legend>Threshold Power</legend>
+            <label htmlFor="FTP">Threshold</label>
+            <Field name="FTP" type="number"/>
+            <span>W</span>
+          </fieldset>
+        </Formik>
+
+        {/* <XYPlot height={300} width={300}>
+          <VerticalGridLines />
+          <HorizontalGridLines />
+          <XAxis />
+          <YAxis />
+
+          <BarSer data={data} />
+        </XYPlot> */}
+        <fieldset>
+          <legend>Training Zones</legend>
+          <div className="zones">
+          <div className="zoneNames">
+            <div className="zoneName">7</div>
+            <div className="zoneName">6</div>
+            <div className="zoneName">5</div>
+            <div className="zoneName">4</div>
+            <div className="zoneName">3</div>
+            <div className="zoneName">2</div>
+            <div className="zoneName">1</div>
+          </div>
+          <div className="zoneColors">
+            <div className="zoneColor" style={{opacity: 1}}></div>
+            <div className="zoneColor" style={{opacity: 0.857143}}></div>
+            <div className="zoneColor" style={{opacity: 0.714286}}></div>
+            <div className="zoneColor" style={{opacity: 0.571429}}></div>
+            <div className="zoneColor" style={{opacity: 0.428571}}></div>
+            <div className="zoneColor" style={{opacity: 0.285714}}></div>
+            <div className="zoneColor" style={{opacity: 0.142857}}></div>
+          </div>
+
+          <div className="zoneValues">
+            <div className="zoneValue">{trainingZones.anaerobicCapacity+1}-2000</div>
+            <div className="zoneValue">{trainingZones.vo2Max}-{trainingZones.anaerobicCapacity}</div>
+            <div className="zoneValue">{trainingZones.lactateThreshold+1}-{trainingZones.vo2Max}</div>
+            <div className="zoneValue">{trainingZones.tempo+1}-{trainingZones.lactateThreshold}</div>
+            <div className="zoneValue">{trainingZones.endurance+1}-{trainingZones.tempo}</div>
+            <div className="zoneValue">{trainingZones.activeRecovery+1}-{trainingZones.endurance}</div>
+            <div className="zoneValue">0-{trainingZones.activeRecovery}</div>
+          </div>
+        </div>
+        </fieldset>
+
+      </div>
+
     )
 
     const footer = (
-      <button>Button</button>
+      <div className="tv-app-userinfo-footer">
+        <Button>Cancel</Button>
+        <Button onClick={()=>handleSubmit()}>Save</Button>
+        <Button>Save&Close</Button>
+      </div>
     )
    
     let renderContent;
     if (selected==="personal") {
-      renderContent = personalInfo
+      renderContent = personalContent;
     } else if (selected==="power") {
-      renderContent = powerInfo
+      renderContent = powerContent;
     }
 
     return (

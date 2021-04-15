@@ -13,6 +13,7 @@ router.get("/basicInfo",isAuth,(req,res)=>{
     res.send({
         username:req.user.username,
         realName:req.user.realName,
+        email:req.user.email,
         avatar:req.user.avatar,
         gender:req.user.gender,
         age:req.user.age,

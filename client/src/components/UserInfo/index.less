@@ -20,7 +20,7 @@
         margin: 0;
         height: 100%;
         background-color: #ccc;
-        font-size: 00.875em;
+        font-size: 0.875em;
         & li {
             list-style-type: none;
             cursor: pointer;
@@ -47,10 +47,131 @@
     }
 
     &-content {
-        padding: 0 30px;
+        padding: 0 2em;
         background-color: #e0dede;
-        padding-top: 28px;
+        padding-top: 2em;
+
+        & h3 {
+            font-weight: bold;
+            font-size: 1em;
+            color: #636569;
+            line-height: normal;
+            margin: 0 0 12px;
+        }
     }
 
+    &-footer button {
+        margin: 0.5em 0.4em;
+        min-width: 5em;
+    }
 }
 
+.tv-user-personal {
+    & form div {
+        display: flex;
+        justify-content: space-between;
+        width: 50%;
+        margin-top: 1em;
+        margin-left: 1em;
+        position: relative;
+        & input,& select {
+            width: 50%;
+            height: 2em;
+            border: 1px grey solid;
+
+            &:focus {
+                border: 2px black solid;
+            }
+        }
+        
+        & span {
+            position: absolute;
+            right: 1.5em;
+            top: 0.2em;
+        }
+    }
+}
+
+.tv-user-power fieldset {
+    padding: 20px 15px 23px;
+    border: 1px solid #ccc;
+    border-radius: 0 0 0 0;
+    
+    & legend {
+        background-color: transparent;
+        font-weight: 400;
+        font-size: .857em;
+        font-family: HelveticaNeueW01-56It;
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-left: -5px;
+        color: #303030;
+        width: unset !important;
+        display: inline;
+    }
+
+    & input {
+        width: 4em;
+        height: 2em;
+        border: 1px grey solid;
+        margin: 0 0.3em;
+        font-size: 0.875em;
+
+        &:focus {
+            border: 2px black solid;
+        }
+    }
+}
+
+.zones-title {
+    color: #5a0792;
+    font-size: .857em;
+    margin-bottom: 5px;
+}
+
+.zones {
+    display: flex;
+    flex-flow: row;
+    text-align: center;
+    cursor: pointer;
+    color: #636569;
+    margin: 0;
+    padding: 0;
+
+    & .zoneNames {
+    }
+
+    & .zoneName {
+        text-align: right;
+        font-size: .857em;
+        padding-top: 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align: middle;
+        height: 20px;
+        margin-bottom: 1px;
+    }
+
+    & .zoneColor {
+        background-color: #5a0792;
+
+        width: 5px;
+        height: 20px;
+        margin-left: 6px;
+        margin-right: 6px;
+        margin-bottom: 1px;
+    }
+
+    & .zoneValue {
+        text-align: left;
+        font-size: .857em;
+        padding-top: 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align: middle;
+        height: 20px;
+        margin-bottom: 1px;
+    }
+}

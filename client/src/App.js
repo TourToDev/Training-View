@@ -6,7 +6,6 @@ import SignUpPage from './pages/SignUpPage/SignUpPage'
 import TraingingViewApp from './pages/TrainingViewApp/TrainingViewApp';
 
 import {
-    BrowserRouter as Router,
     HashRouter,
     Switch,
     Route,
@@ -16,6 +15,8 @@ import {
   } from "react-router-dom";
 
 import "./styles/index.less";
+import '../node_modules/react-vis/dist/style.css';
+
 import axios from 'axios';
 
 // Detect if user has login yes: send to / the app, no: send to /login
