@@ -66,36 +66,43 @@ router.get("/basic", isAuth, async (req, res) => {
      
      let weekInfo = [{
              day: "Mon",
+             dayNum:1,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[]
          },
          {
              day: "Tue",
+             dayNum:2,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },
          {
              day: "Wed",
+             dayNum:3,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },
          {
              day: "Thur",
+             dayNum:4,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },
          {
              day: "Fri",
+             dayNum:5,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },
          {
              day: "Sat",
+             dayNum:6,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },
          {
              day: "Sun",
+             dayNum:7,
              // status:["not-scheduled","scheduled","completed"]
              workouts:[],
          },

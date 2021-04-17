@@ -7,6 +7,7 @@ export default function Modal
         visible,
         onClose,
         title,
+        header,
         children,
         footer,
         bodyStyle
@@ -22,6 +23,7 @@ export default function Modal
                     <div className="tv-modal-body-header">
                         <div>
                             {title}
+                            {header}
                         </div>
                         <div className="tv-modal-body-close" onClick={()=>{ onClose();}}></div>
                     </div>

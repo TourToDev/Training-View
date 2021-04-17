@@ -1,6 +1,6 @@
 import "./index.less"
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {List} from 'antd';
 import {TagOutlined} from '@ant-design/icons';
 import WeeklyListItem from './WeeklyListItem';
@@ -8,22 +8,21 @@ import {useSelector, useDispatch} from "react-redux";
 
 import {fetchWeeklyWorkouts} from "../../features/workoutsCollection/workoutsCollectionSlice"
 import HeaderText from "../HeaderText";
+import WorkoutModal from "../WorkoutModal/WorkoutModal";
 
 export default function WeeklyList() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchWeeklyWorkouts());
     }, [])
-    const weeklyWorkouts = useSelector(state => state.workoutsCollection.weeklyWorkouts)
-    const weeklyWorkoutsLoading = useSelector( state => state.workoutsCollection.weeklyWorkoutsLoading )
+    const weeklyWorkouts = useSelector(state => state.workoutsCollection.weeklyWorkouts);
+    const weeklyWorkoutsLoading = useSelector( state => state.workoutsCollection.weeklyWorkoutsLoading );
+
+    const [workoutModalDate, setWorkoutModalDate] = useState(new Date().getTime());
+    const [workoutId, setWorkoutId] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
     return (
         <div className="tv-app-weeklylist">
-            {/* <div className="tv-app-weeklylist-planheader">
-                <TagOutlined />
-                <span className="tv-app-weeklylist-planheader-text">
-                    Training Plans
-                </span>
-            </div> */}
             <HeaderText icon={<TagOutlined />}>
                 Training Plans
             </HeaderText>
@@ -31,7 +30,20 @@ export default function WeeklyList() {
                 loading={weeklyWorkoutsLoading}
                 size="large"
                 dataSource={weeklyWorkouts}
-                renderItem={item => <WeeklyListItem item={item}/>}
+                renderItem={item => <WeeklyListItem 
+                                        item={item} 
+                                        setWorkoutModalDate={setWorkoutModalDate} 
+                                        setWorkoutId={setWorkoutId}
+                                        setModalVisible = {setModalVisible}
+                                    />
+                            }
+            />
+
+            <WorkoutModal 
+                visible={modalVisible} 
+                date={workoutModalDate} 
+                workoutId={workoutId} 
+                onClose={()=>{setModalVisible(false)}}
             />
         </div>
     )

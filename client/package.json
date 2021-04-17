@@ -41,6 +41,7 @@
     "react-redux": "^7.2.3",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-vis": "^1.11.7"
+    "react-vis": "^1.11.7",
+    "recharts": "^2.0.9"
   }
 }

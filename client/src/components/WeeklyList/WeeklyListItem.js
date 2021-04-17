@@ -13,10 +13,19 @@ function secondsToHms(d) {
     return hDisplay + mDisplay; 
 }
 
-export default function WeeklyListItem({item}) {
+export default function WeeklyListItem({item, setWorkoutModalDate, setWorkoutId, setModalVisible}) {
     //console.log(item);
     const workoutsArr = item.workouts;
-    const plusSign = (<div className="plus-block">+</div>)
+    console.log(item);
+    const nowDate = new Date();
+    const weekDayToday = nowDate.getDay() === 0 ? 7 : nowDate.getDay();
+    const difference = weekDayToday - item.dayNum;
+    nowDate.setDate(nowDate.getDate()-difference);
+    
+    const plusSign = (<div className="plus-block" onClick={()=>{
+        setModalVisible(true);
+        setWorkoutModalDate(nowDate.getTime());
+    }}>+</div>)
 
     const briefInfo = (
         <div>

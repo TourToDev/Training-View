@@ -6,10 +6,10 @@ import Modal from "../Modal/Modal";
 import HeaderText from "../HeaderText";
 import { Field, Form, Formik } from "formik";
 import Button from "../Button/Button";
-import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines, XAxis, YAxis} from 'react-vis';
 import { updateUser } from "../../features/user/userSlice";
 import { LoadingOutlined } from "@ant-design/icons";
-
+import * as Recharts from 'recharts';
+const {XAxis,YAxis,CartesianGrid,BarChart,Tooltip,Bar, Legend} = Recharts;
   
 
 
@@ -17,6 +17,7 @@ export default function UserInfo() {
     const user = useSelector(state => state.user)
     const basicInfo = useSelector(state => state.user.basicInfo);
     const powerInfo = useSelector(state => state.user.powerInfo);
+    const powerProfile = powerInfo.powerProfile;
     const trainingZones = powerInfo.trainingZones;
     const [modalActive,setModalActive] = useState(false);
     const [selected, setSelected] = useState("personal")
@@ -112,18 +113,37 @@ export default function UserInfo() {
         </div>
       </Spin>
     )
+
     const data = [
-      {x: 0, y: 8},
-      {x: 1, y: 5},
-      {x: 2, y: 4},
-      {x: 3, y: 9},
-      {x: 4, y: 1},
-      {x: 5, y: 7},
-      {x: 6, y: 6},
-      {x: 7, y: 3},
-      {x: 8, y: 2},
-      {x: 9, y: 0}
-    ];
+      {
+        "name": "5s Max",
+        "power": powerProfile.max5s,
+      },
+      {
+        "name": "30s Max",
+        "power": powerProfile.max30s,
+      },
+      {
+        "name": "1 min Max",
+        "power": powerProfile.max1mins,
+
+      },
+      {
+        "name": "5 mins Max",
+        "power": powerProfile.max5mins,
+
+      },
+      {
+        "name": "20 mins Max",
+        "power": powerProfile.max20mins,
+
+      },
+      {
+        "name": "60 mins Max",
+        "power": powerProfile.max60mins,
+
+      },
+    ]
 
     const powerContent = (
       <div className="tv-user-power">
@@ -137,6 +157,7 @@ export default function UserInfo() {
           initialValues={{
             FTP:powerInfo.FTP,
           }}
+
         >
           <fieldset>
             <legend>Threshold Power</legend>
@@ -188,6 +209,17 @@ export default function UserInfo() {
         </div>
         </fieldset>
 
+        <fieldset>
+          <legend>Power Profile</legend>
+          <BarChart width={600} height={250} data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="power" fill="#8884d8" />
+          </BarChart>
+        </fieldset>
       </div>
 
     )

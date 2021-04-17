@@ -11,31 +11,38 @@ export const workoutsCollectionSlice = createSlice(
             weeklyWorkouts:[
                 {
                     "day": "Mon",
+                    dayNum:1,
                     "workouts": [
                     ]
                 },
                 {
                     "day": "Tue",
+                    dayNum:2,
                     "workouts": []
                 },
                 {
                     "day": "Wed",
+                    dayNum:3,
                     "workouts": []
                 },
                 {
                     "day": "Thur",
+                    dayNum:4,
                     "workouts": []
                 },
                 {
                     "day": "Fri",
+                    dayNum:5,
                     "workouts": []
                 },
                 {
                     "day": "Sat",
+                    dayNum:6,
                     "workouts": []
                 },
                 {
                     "day": "Sun",
+                    dayNum:7,
                     "workouts": [
                     ]
                 }
