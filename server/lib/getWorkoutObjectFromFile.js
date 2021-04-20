@@ -1,4 +1,5 @@
 const createWorkout = require("../model/createWorkout");
+const { trimTo2Digit } = require("./numberUtils");
 
 function getWorkoutObjectFromFile(fileData, FTP, workoutTimestamp, status) {
             //construct the workout object and calculate the workout specific data
@@ -27,8 +28,8 @@ function getWorkoutObjectFromFile(fileData, FTP, workoutTimestamp, status) {
             const workoutBasic = {    
               FTP:FTP,
               duration,
-              distance,
-              elevation_gain,
+              distance:trimTo2Digit(distance),
+              elevation_gain: elevation_gain * 1000,
       
               avg_speed,
               max_speed,
@@ -56,7 +57,7 @@ function getWorkoutObjectFromFile(fileData, FTP, workoutTimestamp, status) {
       
         // collect the workout detail information into an array
         // records that was too big may break your server
-        const workout = createWorkout(workoutTimestamp,workoutBasic,workoutPower,workoutDetail,status);
+        const workout = createWorkout(workoutTimestamp,status,{},workoutBasic,workoutPower,workoutDetail);
 
         return workout;
 }

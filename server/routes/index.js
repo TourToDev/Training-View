@@ -7,7 +7,6 @@ const User = connection.models.User;
 
 const genPassword = require('../lib/passwordUtils').genPassword;
 const isAuth = require('./authMiddleware').isAuth;
-const userRoute = require('./userRoute');
 const basicInfoRoute = require("./basicInfoRoute");
 const workoutsCollectionsRoute = require("./workoutsCollectionRoute");
 
@@ -39,7 +38,6 @@ router.post('/register', (req, res) => {
         });
  });
 
-router.use('/user',userRoute);
 
 router.use('/userBasic', basicInfoRoute)
 

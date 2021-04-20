@@ -47,6 +47,7 @@ export default function UserInfo() {
         formRef.current.handleSubmit()
       }
     }
+
     const personalContent = (
       <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }}/>} spinning={user.updating} >
         <div className="tv-user-personal">
@@ -161,7 +162,7 @@ export default function UserInfo() {
         >
           <fieldset>
             <legend>Threshold Power</legend>
-            <label htmlFor="FTP">Threshold</label>
+            <label htmlFor="FTP">Threshold:</label>
             <Field name="FTP" type="number"/>
             <span>W</span>
           </fieldset>
@@ -178,35 +179,35 @@ export default function UserInfo() {
         <fieldset>
           <legend>Training Zones</legend>
           <div className="zones">
-          <div className="zoneNames">
-            <div className="zoneName">7</div>
-            <div className="zoneName">6</div>
-            <div className="zoneName">5</div>
-            <div className="zoneName">4</div>
-            <div className="zoneName">3</div>
-            <div className="zoneName">2</div>
-            <div className="zoneName">1</div>
-          </div>
-          <div className="zoneColors">
-            <div className="zoneColor" style={{opacity: 1}}></div>
-            <div className="zoneColor" style={{opacity: 0.857143}}></div>
-            <div className="zoneColor" style={{opacity: 0.714286}}></div>
-            <div className="zoneColor" style={{opacity: 0.571429}}></div>
-            <div className="zoneColor" style={{opacity: 0.428571}}></div>
-            <div className="zoneColor" style={{opacity: 0.285714}}></div>
-            <div className="zoneColor" style={{opacity: 0.142857}}></div>
-          </div>
+            <div className="zoneNames">
+              <div className="zoneName">7</div>
+              <div className="zoneName">6</div>
+              <div className="zoneName">5</div>
+              <div className="zoneName">4</div>
+              <div className="zoneName">3</div>
+              <div className="zoneName">2</div>
+              <div className="zoneName">1</div>
+            </div>
+            <div className="zoneColors">
+              <div className="zoneColor" style={{opacity: 1}}></div>
+              <div className="zoneColor" style={{opacity: 0.857143}}></div>
+              <div className="zoneColor" style={{opacity: 0.714286}}></div>
+              <div className="zoneColor" style={{opacity: 0.571429}}></div>
+              <div className="zoneColor" style={{opacity: 0.428571}}></div>
+              <div className="zoneColor" style={{opacity: 0.285714}}></div>
+              <div className="zoneColor" style={{opacity: 0.142857}}></div>
+            </div>
 
-          <div className="zoneValues">
-            <div className="zoneValue">{trainingZones.anaerobicCapacity+1}-2000</div>
-            <div className="zoneValue">{trainingZones.vo2Max}-{trainingZones.anaerobicCapacity}</div>
-            <div className="zoneValue">{trainingZones.lactateThreshold+1}-{trainingZones.vo2Max}</div>
-            <div className="zoneValue">{trainingZones.tempo+1}-{trainingZones.lactateThreshold}</div>
-            <div className="zoneValue">{trainingZones.endurance+1}-{trainingZones.tempo}</div>
-            <div className="zoneValue">{trainingZones.activeRecovery+1}-{trainingZones.endurance}</div>
-            <div className="zoneValue">0-{trainingZones.activeRecovery}</div>
+            <div className="zoneValues">
+              <div className="zoneValue">{trainingZones.anaerobicCapacity+1}-2000</div>
+              <div className="zoneValue">{trainingZones.vo2Max}-{trainingZones.anaerobicCapacity}</div>
+              <div className="zoneValue">{trainingZones.lactateThreshold+1}-{trainingZones.vo2Max}</div>
+              <div className="zoneValue">{trainingZones.tempo+1}-{trainingZones.lactateThreshold}</div>
+              <div className="zoneValue">{trainingZones.endurance+1}-{trainingZones.tempo}</div>
+              <div className="zoneValue">{trainingZones.activeRecovery+1}-{trainingZones.endurance}</div>
+              <div className="zoneValue">0-{trainingZones.activeRecovery}</div>
+            </div>
           </div>
-        </div>
         </fieldset>
 
         <fieldset>
@@ -226,9 +227,12 @@ export default function UserInfo() {
 
     const footer = (
       <div className="tv-app-userinfo-footer">
-        <Button>Cancel</Button>
+        <Button onClick={()=>setModalActive(false)}>Cancel</Button>
         <Button onClick={()=>handleSubmit()}>Save</Button>
-        <Button>Save&Close</Button>
+        <Button onClick={()=>{
+          handleSubmit();
+          setModalActive(false)
+        }}>Save&Close</Button>
       </div>
     )
    
@@ -256,6 +260,10 @@ export default function UserInfo() {
                 maxWidth:"80vw",
                 minWidth:"800px",
                 height:"630px",
+              }}
+              contentStyle={{
+                height:"500px",
+                overflowY:"auto"
               }}
             >
             <div className="tv-app-userinfo">

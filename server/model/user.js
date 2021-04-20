@@ -89,7 +89,6 @@ const UserSchema = new mongoose.Schema({
             default:"",
         },
         planned:{
-            type:String,
             duration:Number,
             elevation_gain:Number,
             distance:Number,
@@ -202,7 +201,7 @@ UserSchema.methods.updatePowerProfile = async function (workoutDetail) {
     }
 
     const originalPowerProfile = this.power.powerProfile;
-
+    
     const newPowerProfile = getPowerProfile(workoutDetail);
 
     if ( needUpdate(originalPowerProfile,newPowerProfile) ) {

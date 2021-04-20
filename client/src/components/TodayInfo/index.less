@@ -1,3 +1,53 @@
 .tv-app-today {
     margin-left: 0.5em;
+
+    &-emptycard {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-tip {
+        font-size: .857em;
+        margin: 5px;
+        line-height: 1.429em;
+        color: #636569;
+        font-weight: 400;
+        margin-bottom: 2em;
+    }
+
+}
+
+.btn-outlined {
+    background: none;
+    border: 1px solid #8d8d8d;
+    color: #8d8d8d;
+    cursor: pointer;
+    border-radius: 3px;
+    outline: none;
+    padding: 7px 20px;
+    font-size: 0.875em;
+
+    &:hover {
+        background: none;
+        border-color: #636569;
+        color: #636569;
+        cursor: pointer;
+    }
+}
+
+.todayinfocard {
+    width:100%;
+    background-color:#b5b5b5;
+    border:0 solid #ccc;
+    border-radius: 2px;
+    box-shadow:0 3px 6px rgba(0,0,0,.16);
+    border:1px solid #ccc;
+    cursor:pointer;
+    &:hover {
+        box-shadow: 0 8px 8px rgba(0,0,0,.16);
+    }
+    border-bottom: 3px solid white;
+
 }

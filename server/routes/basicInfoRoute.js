@@ -32,6 +32,8 @@ router.get("/powerInfo", isAuth, (req, res) => {
 
 //update an user's basic information
 router.post("/updateBasicInfo",isAuth, async (req,res)=>{
+    console.log(req.body.username)
+
     await User.updateOne({username:req.user.username}, {...req.body});
     res.send("Updated");
 });

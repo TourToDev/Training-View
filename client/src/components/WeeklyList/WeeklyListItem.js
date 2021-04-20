@@ -1,48 +1,81 @@
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, List, Tag } from 'antd'
+import { List, Tag } from 'antd'
 import React from 'react'
+import { secondsToHms } from '../../lib/timeUtils';
 
-function secondsToHms(d) {
-    d = Number(d);
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " hr, " : " hrs, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " min, " : " mins, ") : "";
-    return hDisplay + mDisplay; 
-}
-
-export default function WeeklyListItem({item, setWorkoutModalDate, setWorkoutId, setModalVisible}) {
-    //console.log(item);
+export default function WeeklyListItem({
+        item, 
+        setWorkoutModalDate, 
+        setWorkoutId, 
+        setModalVisible
+    }) {
+        
     const workoutsArr = item.workouts;
-    console.log(item);
+    
     const nowDate = new Date();
     const weekDayToday = nowDate.getDay() === 0 ? 7 : nowDate.getDay();
     const difference = weekDayToday - item.dayNum;
     nowDate.setDate(nowDate.getDate()-difference);
     
-    const plusSign = (<div className="plus-block" onClick={()=>{
-        setModalVisible(true);
-        setWorkoutModalDate(nowDate.getTime());
-    }}>+</div>)
+    const plusSign = (
+                        <div className="plus-block" onClick={()=>{
+                            setModalVisible(true);
+                            setWorkoutModalDate(nowDate.getTime());
+                            setWorkoutId(null);
+                        }}>
+                            +
+                        </div>
+                    );
 
     const briefInfo = (
-        <div>
-            <p><i>Duration: </i>{workoutsArr.length===0?null:secondsToHms(workoutsArr[0].basic.duration)}</p>
-            <p><i>Distance: </i> {workoutsArr.length===0?null:workoutsArr[0].basic.distance} km</p>
-            <p><i>TSS</i> --</p>
+        <div onClick={()=>{
+            setModalVisible(true);
+            setWorkoutId(workoutsArr[0].workoutId);
+        }}>
+            <p>
+                <small>Duration: </small>
+                {getDisplayValues(workoutsArr).duration}
+            </p>
+            <p>
+                <small>Distance: </small>
+                {getDisplayValues(workoutsArr).distance} KM
+            </p>
+            <p>
+                {getDisplayValues(workoutsArr).TSS} TSS
+            </p>
         </div>
     )
     return (
-        <List.Item 
-            actions={[
-            ]}
+        <List.Item
             className="tv-app-weeklylist-item"
         >
-            <Tag>{item.day}</Tag>
-            {workoutsArr[0]?<Tag>{workoutsArr[0].status}</Tag>:null}
+            <Tag color="geekblue">{item.day}</Tag>
+            {workoutsArr[0]?
+                <Tag color={workoutsArr[0].status==="completed"? "green": "red"}>
+                    {workoutsArr[0].status}
+                </Tag>
+                :
+                null}
             {workoutsArr.length===0? plusSign : briefInfo}
         </List.Item>
     )
+}
+
+function getDisplayValues(workoutsArr) {
+    const result = {}
+    if (workoutsArr.length === 0) {
+        return result;
+    } 
+
+    if (workoutsArr[0].basic.duration) {
+        result.duration = secondsToHms(workoutsArr[0].basic.duration);
+        result.distance = workoutsArr[0].basic.distance;
+        result.TSS = workoutsArr[0].power.TSS;
+    } else if (workoutsArr[0].planned.duration) {
+        result.duration =secondsToHms(workoutsArr[0].planned.duration);
+        result.distance = workoutsArr[0].planned.distance;
+        result.TSS = workoutsArr[0].planned.TSS;
+    }
+
+    return result;
 }

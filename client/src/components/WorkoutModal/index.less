@@ -1,9 +1,74 @@
 .tv-workoutmodal {
+    &-header {
+        padding: 12px 0 10px 12px;
+    }
+
+    &-body {
+        margin-left: 17%;
+        padding:1.5em;
+    }
+
+    &-datalabels {
+        color: #76787d;
+        font-size: .857em;
+        cursor: pointer;
+    }
+
+    &-briefcard {
+        width: 570px;
+        height: 80px;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        background-color: white;
+        justify-content: space-around;
+
+        & .key-stats {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #000;
+        }
+    }
+
+    &-buttongroup {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 80px;
+        position: relative;
+        top: -23.5px;
+        margin-left: 1em;
+
+
+        & button {
+            height: 35px;
+            width: 86px;
+            font-size: 1em;
+        }
+
+    }
+
+    &-analyzebutton {
+        background-color: #3c7fc4;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+
     &-fieldtypes {
-        padding-left: 10em;
+        padding-left: 10.5em;
+
+        & span {
+            font-size: .857em;
+            line-height: 1.214em;
+            margin-bottom: 5px;
+            color: #636569;
+            font-weight: bold;
+        }
 
         & span + span {
-            margin-left: 3em;
+            margin-left: 3.5em;
         }
     }
 
@@ -16,6 +81,9 @@
         & span {
             margin-top: 1em;
             line-height: 1.8em;
+            color: #636569;
+            font-weight: 400;
+            cursor: default;
         }
     }
 
@@ -23,7 +91,11 @@
         display: inline-flex;
         margin-left: 5.5em;
 
-
+        & span {
+            line-height: 1.8em;
+            color: #636569;
+            font-weight: 400;
+        }
     }
 
     &-forminputs {
@@ -35,14 +107,21 @@
             margin-top: 1em;
             height: 1.8em;
             width: 6em;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            text-align: center;
         }
     }
 
     &-forminputs-row {
         display: inline-flex;
         & input {
-            margin-left: 0.8em;
-            width: 4.5em;
+            margin-left: 0.5em;
+            height: 1.8em;
+            width: 5em;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            text-align: center;
         }
     }
 }

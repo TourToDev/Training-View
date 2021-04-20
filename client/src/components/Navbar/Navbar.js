@@ -10,7 +10,6 @@ export default function NavBar() {
         <nav className="tv-app-nav">
             <h2 className="tv-app-nav-logo">Training View</h2>
             
-
             <span>
                 <Link className={pathname==="/"? "tv-app-nav-selected" : null} to="/">Home</Link>
                 <Link className={pathname==="/calendar"? "tv-app-nav-selected" : null} to="/calendar">Calendar</Link>

@@ -10,7 +10,8 @@ export default function Modal
         header,
         children,
         footer,
-        bodyStyle
+        bodyStyle,
+        contentStyle,
     }) {
 
     const visibility = visible? "initial":"hidden";    
@@ -28,7 +29,7 @@ export default function Modal
                         <div className="tv-modal-body-close" onClick={()=>{ onClose();}}></div>
                     </div>
 
-                    <div className="tv-modal-body-content">
+                    <div className="tv-modal-body-content" style={contentStyle}>
                         {children}
                     </div>
 

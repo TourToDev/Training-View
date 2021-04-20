@@ -30,20 +30,24 @@ export default function WeeklyList() {
                 loading={weeklyWorkoutsLoading}
                 size="large"
                 dataSource={weeklyWorkouts}
-                renderItem={item => <WeeklyListItem 
-                                        item={item} 
-                                        setWorkoutModalDate={setWorkoutModalDate} 
-                                        setWorkoutId={setWorkoutId}
-                                        setModalVisible = {setModalVisible}
-                                    />
-                            }
+                renderItem={
+                    item => 
+                        <WeeklyListItem 
+                            item={item} 
+                            setWorkoutModalDate={setWorkoutModalDate} 
+                            setWorkoutId={setWorkoutId}
+                            setModalVisible = {setModalVisible}
+                        />
+                }
             />
 
             <WorkoutModal 
                 visible={modalVisible} 
+                setVisible={setModalVisible}
                 date={workoutModalDate} 
                 workoutId={workoutId} 
                 onClose={()=>{setModalVisible(false)}}
+                setWorkoutId={setWorkoutId}
             />
         </div>
     )

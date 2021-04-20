@@ -32,6 +32,13 @@ router.get("/basic", isAuth, async (req, res) => {
     res.send(workoutsBasic);        
  });
  
+ router.get("/get/basic/:workoutId", async (req, res) => {
+    const {workoutId} = req.params
+    const userDoc = await  User.findOne({username:req.user.username});
+    const workout = userDoc.workoutsCollection.filter( workout => workout.id === workoutId )[0];
+    res.send(workout);
+ } )
+
  //get an particular workout's detailed data
  router.get("/detail/:workoutId", isAuth, async (req,res)=>{
      const workoutId = req.params.workoutId;
@@ -59,6 +66,7 @@ router.get("/basic", isAuth, async (req, res) => {
                                          status: workout.status,
                                          workoutTimestamp:workout.workoutTimestamp,
                                          weekDay:new Date(workout.workoutTimestamp).getDay(),
+                                         planned:workout.planned,
                                          basic:workout.basic,
                                          power:workout.power,
                                      }) 
@@ -115,6 +123,7 @@ router.get("/basic", isAuth, async (req, res) => {
              workoutId:workout.workoutId,
              workoutTimestamp:workout.workoutTimestamp,
              weekDay:weekIndex + 1,
+             planned:workout.planned,
              basic:workout.basic,
              power:workout.power,
          })
@@ -130,18 +139,24 @@ router.get("/basic", isAuth, async (req, res) => {
  
  //save a workout's basic information into the database
  router.post("/add/basic",isAuth, async (req, res) => {
-     const basicWorkoutInfo = req.body.basic;
-     const basicPowerInfo = req.body.power;
- 
+     const {
+         status,
+         workoutTimestamp,
+         planned,
+         basic, 
+         power, 
+        } = req.body;
+    console.log(req.body)
+    
      const userDoc = await User.findOne({username:req.user.username});
- 
-     const workout = createWorkout({...basicWorkoutInfo},{...basicPowerInfo});
+
+     const workout = createWorkout(workoutTimestamp,status,planned,basic,power);
  
      userDoc.workoutsCollection.push(workout);
- 
+
      await userDoc.save();
- 
-     res.send("Basic Power Info Saved")
+     const length = userDoc.workoutsCollection.length;
+     res.send(userDoc.workoutsCollection[length-1].id);
  });
  
  // upload an fit file and save the interpreted data into the 
@@ -149,8 +164,9 @@ router.get("/basic", isAuth, async (req, res) => {
  router.use(fileUpload())
  
  router.post("/add/upload", isAuth, (req,res)=>{
+     console.log("Uploading");
      const workFile = req.files.workoutfile.data;
- 
+     console.log(workFile)
      const workoutTimestamp = parseInt(req.body.workoutTimestamp);
  
      //   Create a FitParser instance (options argument is optional)
@@ -176,6 +192,7 @@ router.get("/basic", isAuth, async (req, res) => {
          workout.updateNP();
          workout.updateIF();
          workout.updateTSS();
+         workout.updateVI();
          
          //then save the workout into the collection
          const userDoc =  await User.findOne({username: req.user.username});
@@ -191,11 +208,21 @@ router.get("/basic", isAuth, async (req, res) => {
              await userDoc.updatePowerProfile(workout.detail);
          });
  
-         res.send("Workout Saved");
+         res.send(userDoc.workoutsCollection[userDoc.workoutsCollection.length - 1].id);
      });
  
  })
  
+ router.post("/edit/basic/:workoutId", async (req, res)=>{
+     const { workoutId }= req.params;
+     const userDoc = await User.findOne({username:req.user.username});
+     const workoutsCollection = userDoc.workoutsCollection;
+     const editingWorkout = workoutsCollection.filter( workout => workout.id === workoutId )[0];
+     Object.assign( editingWorkout, req.body );
+     await userDoc.save();
+     res.send(JSON.stringify(editingWorkout));
+ })
+
  router.delete("/deleteWorkoutsCollection",async (req,res) => {
      const doc = await User.findOne({username:req.user.username});
      doc.workoutsCollection = [];
