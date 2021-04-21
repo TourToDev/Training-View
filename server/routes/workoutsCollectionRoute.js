@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const fileUpload = require("express-fileupload");
 const FitParser = require('fit-file-parser').default;
-
+const _ = require("lodash")
 const isAuth = require('./authMiddleware').isAuth;
 const connection = require('../config/database');
 const createWorkout = require("../model/createWorkout");
-
+const {trimTo2Digit} = require('../lib/numberUtils')
 const getWorkoutObjectFromFile = require("../lib/getWorkoutObjectFromFile");
 const {weekTimeRange} = require("../lib/timeUtils");
 
 const User = connection.models.User;
+
 
 //get an user's workout collection with basic data
 router.get("/basic", isAuth, async (req, res) => {
@@ -37,10 +38,10 @@ router.get("/basic", isAuth, async (req, res) => {
     const userDoc = await  User.findOne({username:req.user.username});
     const workout = userDoc.workoutsCollection.filter( workout => workout.id === workoutId )[0];
     res.send(workout);
- } )
+ } );
 
  //get an particular workout's detailed data
- router.get("/detail/:workoutId", isAuth, async (req,res)=>{
+ router.get("/get/detail/:workoutId", isAuth, async (req,res)=>{
      const workoutId = req.params.workoutId;
      
      const userDoc = await User.findOne({username:req.user.username});
@@ -49,6 +50,50 @@ router.get("/basic", isAuth, async (req, res) => {
  
      res.send(workout.detail? workout.detail : "This Workout Has No Detail");
  
+ });
+
+ router.get("/get/detail/zonePercent/:workoutId", isAuth, async (req, res) => {
+    const workoutId = req.params.workoutId;
+     
+    const userDoc = await User.findOne({username:req.user.username});
+
+    const workout = userDoc.workoutsCollection.find((workout)=>workout.id===workoutId);
+
+    const workoutDetail = workout.detail;
+    const trainingZones = userDoc.power.trainingZones;
+    const zoneArr = [0,0,0,0,0,0,0];
+    console.log("calculating zone percent")
+    workoutDetail.forEach( unit => {
+        if (unit.power < trainingZones.activeRecovery) {
+            zoneArr[0]+=1;
+        } else if (unit.power < trainingZones.endurance) {
+            zoneArr[1]+=1;
+        } else if (unit.power < trainingZones.tempo) {
+            zoneArr[2]+=1
+        } else if (unit.power < trainingZones.lactateThreshold) {
+            zoneArr[3]+=1;
+        } else if (unit.power < trainingZones.vo2Max) {
+            zoneArr[4]+=1
+         }else if (unit.power < trainingZones.anaerobicCapacity) {
+            zoneArr[5]+=1;
+        } else {
+            zoneArr[6]+=1
+        }
+    } );
+
+    const zoneSum = _.sum(zoneArr);
+    const zonePercent = [];
+
+    for (let i = 0; i < zoneArr.length; i++) {
+        const zoneNum = zoneArr[i];
+        const percent = trimTo2Digit(zoneNum / zoneSum);
+        zonePercent.push( {
+            name: i,
+            percent:parseInt(percent*100),
+        } );
+    }
+
+    res.send(zonePercent);
  })
  
  router.get("/weeklyWorkout",isAuth, async (req, res) => {
@@ -193,6 +238,11 @@ router.get("/basic", isAuth, async (req, res) => {
          workout.updateIF();
          workout.updateTSS();
          workout.updateVI();
+         if (Object.keys(workout.detail).length) {
+             workout.detail.forEach( unit => {
+                 unit.altitude = unit.altitude * 1000; 
+             } )
+         }
          
          //then save the workout into the collection
          const userDoc =  await User.findOne({username: req.user.username});

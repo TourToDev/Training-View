@@ -18,3 +18,9 @@ export function hmsToSecond(hms="") {
     const [hour, mins, second] = hmsArr;
     return parseInt(hour) * 3600 + parseInt(mins) * 60 + parseInt(second);
 }
+
+export function isSameDay(dayA=new Date(), dayB=new Date()){
+    return dayA.getFullYear()===dayB.getFullYear()
+         &&dayA.getMonth()===dayB.getMonth()
+         &&dayA.getDate()===dayB.getDate();
+}

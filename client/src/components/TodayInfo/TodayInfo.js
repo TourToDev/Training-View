@@ -20,11 +20,13 @@ export default function TodayInfo() {
             && workoutDate.getDate() === today.getDate()
         );
     })[0];
+
     const todayWorkoutId = todayWorkout? todayWorkout.workoutId : null;
     const todayWorkoutTime = todayWorkout? todayWorkout.workoutTimestamp : null;
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalDate, setModalDate] = useState(null);
+    const [workoutId, setWorkoutId] = useState(todayWorkoutId);
 
     const emptyCard = (
         <div className="tv-app-today-emptycard">
@@ -45,10 +47,15 @@ export default function TodayInfo() {
             onClick={() => {
                 setModalDate(todayWorkoutTime);
                 setModalVisible(true);
+                setWorkoutId(todayWorkoutId);
             }}
         >
-            <div className="tv-workoutmodal-briefcard todayinfocard" style={{
-                }}>
+            <div 
+                className="tv-workoutmodal-briefcard todayinfocard" 
+                style={{
+                
+                }}
+                    >
                 <span className="key-stats">
                     {todayWorkout.basic.duration? secondsToHms(todayWorkout.basic.duration) : "--:--:--"}
                 </span>
@@ -129,9 +136,10 @@ export default function TodayInfo() {
             <WorkoutModal 
                 visible={modalVisible} 
                 setVisible={setModalVisible}
+                setWorkoutId={setWorkoutId}
                 onClose={()=>setModalVisible(false)}
                 date={modalDate}
-                workoutId={todayWorkoutId}
+                workoutId={workoutId}
             />
         </div>
     )

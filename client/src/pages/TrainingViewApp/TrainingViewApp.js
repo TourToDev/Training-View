@@ -6,6 +6,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { Route, Switch } from 'react-router';
 import MainBroad from '../../components/MainBroad/MainBroad';
 import { fetchBasicWorkouts, fetchWeeklyWorkouts } from '../../features/workoutsCollection/workoutsCollectionSlice';
+import Calendar from '../../components/Calendar/Calendar';
 
 export default function TrainingViewApp() {
     const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export default function TrainingViewApp() {
            <main className="tv-app-main">
                 <Switch>
                     <Route path="/calendar">
-
+                        <Calendar />
                     </Route>
 
                     <Route path="/">
