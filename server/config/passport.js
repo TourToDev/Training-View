@@ -10,7 +10,6 @@ const customFields = {
 };
 
 const verifyCallback = (username, password, done) => {
-
     User.findOne({ username: username })
         .then((user) => {
 
@@ -27,7 +26,6 @@ const verifyCallback = (username, password, done) => {
         .catch((err) => {   
             done(err);
         });
-
 }
 
 const strategy  = new LocalStrategy(customFields, verifyCallback);

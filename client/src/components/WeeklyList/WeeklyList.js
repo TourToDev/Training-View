@@ -1,8 +1,8 @@
 import "./index.less"
 
 import React, {useEffect, useState} from 'react'
-import {List} from 'antd';
-import {TagOutlined} from '@ant-design/icons';
+import {List, Spin} from 'antd';
+import {LoadingOutlined, TagOutlined} from '@ant-design/icons';
 import WeeklyListItem from './WeeklyListItem';
 import {useSelector, useDispatch} from "react-redux";
 
@@ -26,20 +26,23 @@ export default function WeeklyList() {
             <HeaderText icon={<TagOutlined />}>
                 Training Plans
             </HeaderText>
-            <List className="tv-app-weeklylist-list"
-                loading={weeklyWorkoutsLoading}
-                size="large"
-                dataSource={weeklyWorkouts}
-                renderItem={
-                    item => 
-                        <WeeklyListItem 
-                            item={item} 
-                            setWorkoutModalDate={setWorkoutModalDate} 
-                            setWorkoutId={setWorkoutId}
-                            setModalVisible = {setModalVisible}
-                        />
-                }
-            />
+            <Spin spinning={weeklyWorkoutsLoading} indicator={<LoadingOutlined style={{ fontSize: 24 }}/>}> 
+                <List className="tv-app-weeklylist-list"
+                   
+                    size="large"
+                    dataSource={weeklyWorkouts}
+                    renderItem={
+                        item => 
+                            <WeeklyListItem 
+                                item={item} 
+                                setWorkoutModalDate={setWorkoutModalDate} 
+                                setWorkoutId={setWorkoutId}
+                                setModalVisible = {setModalVisible}
+                            />
+                    }
+                />
+            </Spin>
+
 
             <WorkoutModal 
                 visible={modalVisible} 

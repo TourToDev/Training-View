@@ -26,6 +26,8 @@ function calculateTrainingStressScore(FTP,NP,duration,IF) {
 
 function calculateChronicTrainingLoad(arrOfTSS) {
     //CTL = Average TSS of last 42 days
+    console.log("TSS array:")
+    console.log(arrOfTSS)
     const CTL = _.mean(arrOfTSS);
     return !CTL? 0: CTL;
 }

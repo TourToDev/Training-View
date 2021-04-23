@@ -1,7 +1,13 @@
 const { trimTo2Digit } = require("../lib/numberUtils");
 const {calculateNormalizedPower, calculateIntensityFactor, calculateTrainingStressScore} = require("../lib/powerAnalysisUtils");
 //compose three cat of information into the workout object
-const createWorkout = (workoutTimestamp,status,planned={},basic={}, power={}, detail=[]) => {
+const createWorkout = (
+  workoutTimestamp,
+  status,
+  planned={},
+  basic={}, 
+  power={}, 
+  detail=[]) => {
     const workoutObject = {
         workoutTimestamp,
         status,
@@ -42,7 +48,7 @@ const createWorkout = (workoutTimestamp,status,planned={},basic={}, power={}, de
 
     workoutObject.updateVI = function () {
       if (this.power.NP && this.power.avg_power) {
-        this.VI = this.power.NP / this.power.avg_power;
+        this.VI = trimTo2Digit( this.power.NP / this.power.avg_power);
       } else {
         console.log("Unable to calculate VI")
       }

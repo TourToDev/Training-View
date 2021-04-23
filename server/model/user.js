@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { calculateChronicTrainingLoad, calculateAcuteTrainingLoad, calculateTrainingStressBalance } = require('../lib/powerAnalysisUtils');
-
+const { getWeeklyWorkout } = require('../lib/timeUtils');
+const _ = require("lodash");
 const UserSchema = new mongoose.Schema({
     username:{
         type:String,
@@ -73,7 +74,7 @@ const UserSchema = new mongoose.Schema({
             type: Number,
             default:0
         },
-        ACL:{
+        ATL:{
             type: Number,
             default:0
         },
@@ -116,7 +117,6 @@ const UserSchema = new mongoose.Schema({
             IF:Number,
             VI:Number,
         },
-
         detail:[
             {
                 second: Number,
@@ -142,6 +142,9 @@ UserSchema.methods.updateTrainingLoad = async function () {
     this.trainingLoad.CTL = CTL;
     this.trainingLoad.ATL = ATL;
     this.trainingLoad.TSB = TSB;
+
+    const weeklyWorkoutsTSS = getWeeklyWorkout(this.workoutsCollection).map( workout => workout.power.TSS);
+    this.trainingLoad.weeklyTSS = _.sum(weeklyWorkoutsTSS);
 
     await this.save();
 
@@ -213,6 +216,7 @@ UserSchema.methods.updatePowerProfile = async function (workoutDetail) {
 
 }
 
+
 //------------------------------------------------------
 
 UserSchema.pre("save",function (next) {
@@ -220,7 +224,8 @@ UserSchema.pre("save",function (next) {
         this.power.trainingZones = setTrainingZone(this.power.FTP)
     }
     next();
-})
+});
+
 
 function setTrainingZone (FTP) {
     const zoneToPower = {
@@ -239,7 +244,7 @@ function setTrainingZone (FTP) {
 // Judge if workout is in a certain time limit from today
 function dayFromNow(dayNum) {
     return function (workout) {
-        const workoutTimestamp = workout.basic.workoutTimestamp;
+        const workoutTimestamp = workout.workoutTimestamp;
         const nowTime = Date.now();
         return nowTime - workoutTimestamp <= dayNum*24*60*60*1000? true : false;
     }

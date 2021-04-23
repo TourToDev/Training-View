@@ -18,6 +18,4 @@ const setTrainingZone = (trainingZone,FTP) => {
         }
     }
     return trainingZone;
-}
-
-console.log(setTrainingZone([],237))
+};

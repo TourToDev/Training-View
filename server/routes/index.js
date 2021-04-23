@@ -15,7 +15,7 @@ const workoutsCollectionsRoute = require("./workoutsCollectionRoute");
  * -------------- POST ROUTES ----------------
  */
 
-router.post('/login',passport.authenticate('local'),(req,res)=>res.send(req.user))
+router.post('/login',passport.authenticate('local'),(req,res)=>res.send("Login Success"))
 
 router.post('/register', (req, res) => {
     const requestBody = req.body;

@@ -3,12 +3,13 @@ const router = express.Router();
 const fileUpload = require("express-fileupload");
 const FitParser = require('fit-file-parser').default;
 const _ = require("lodash")
+
 const isAuth = require('./authMiddleware').isAuth;
 const connection = require('../config/database');
 const createWorkout = require("../model/createWorkout");
 const {trimTo2Digit} = require('../lib/numberUtils')
 const getWorkoutObjectFromFile = require("../lib/getWorkoutObjectFromFile");
-const {weekTimeRange} = require("../lib/timeUtils");
+const {getWeeklyWorkout} = require("../lib/timeUtils");
 
 const User = connection.models.User;
 
@@ -97,69 +98,10 @@ router.get("/basic", isAuth, async (req, res) => {
  })
  
  router.get("/weeklyWorkout",isAuth, async (req, res) => {
+     console.log("Getting weekly workout")
      const userDoc = await User.findOne({username:req.user.username});
-     const [weekStart, weekEnd] = weekTimeRange();
-     console.log({
-         weekStart,
-         weekEnd,
-     })
- 
-     const weeklyWorkouts = userDoc.workoutsCollection
-                                     .filter((workout) => ((workout.workoutTimestamp >= weekStart && workout.workoutTimestamp <=weekEnd)? true : false) )
-                                     .map( workout => ({
-                                         workoutId:workout.id,
-                                         status: workout.status,
-                                         workoutTimestamp:workout.workoutTimestamp,
-                                         weekDay:new Date(workout.workoutTimestamp).getDay(),
-                                         planned:workout.planned,
-                                         basic:workout.basic,
-                                         power:workout.power,
-                                     }) 
-                                   )
-     
-     let weekInfo = [{
-             day: "Mon",
-             dayNum:1,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[]
-         },
-         {
-             day: "Tue",
-             dayNum:2,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-         {
-             day: "Wed",
-             dayNum:3,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-         {
-             day: "Thur",
-             dayNum:4,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-         {
-             day: "Fri",
-             dayNum:5,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-         {
-             day: "Sat",
-             dayNum:6,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-         {
-             day: "Sun",
-             dayNum:7,
-             // status:["not-scheduled","scheduled","completed"]
-             workouts:[],
-         },
-     ];
+     const weeklyWorkouts = getWeeklyWorkout(userDoc.workoutsCollection);
+     let weekInfo = [...weeklyWorkoutTemplate];
  
      weeklyWorkouts.forEach( workout => {
          const weekIndex = workout.weekDay === 0? 6 : workout.weekDay - 1;
@@ -178,8 +120,7 @@ router.get("/basic", isAuth, async (req, res) => {
          {
              weekInfo,
          }
-     )
-     
+     );
  })
  
  //save a workout's basic information into the database
@@ -191,7 +132,6 @@ router.get("/basic", isAuth, async (req, res) => {
          basic, 
          power, 
         } = req.body;
-    console.log(req.body)
     
      const userDoc = await User.findOne({username:req.user.username});
 
@@ -211,7 +151,6 @@ router.get("/basic", isAuth, async (req, res) => {
  router.post("/add/upload", isAuth, (req,res)=>{
      console.log("Uploading");
      const workFile = req.files.workoutfile.data;
-     console.log(workFile)
      const workoutTimestamp = parseInt(req.body.workoutTimestamp);
  
      //   Create a FitParser instance (options argument is optional)
@@ -226,7 +165,7 @@ router.get("/basic", isAuth, async (req, res) => {
  
      fitParser.parse(workFile, async (err, data) => {
          if (err) {
-             console.log(err);
+             res.send("Error when parsing data.");
          }
  
          const currentFTP = req.user.power.FTP;
@@ -238,6 +177,7 @@ router.get("/basic", isAuth, async (req, res) => {
          workout.updateIF();
          workout.updateTSS();
          workout.updateVI();
+
          if (Object.keys(workout.detail).length) {
              workout.detail.forEach( unit => {
                  unit.altitude = unit.altitude * 1000; 
@@ -257,10 +197,11 @@ router.get("/basic", isAuth, async (req, res) => {
  
              await userDoc.updatePowerProfile(workout.detail);
          });
+
+         const workoutId = userDoc.workoutsCollection[userDoc.workoutsCollection.length - 1].id;
  
-         res.send(userDoc.workoutsCollection[userDoc.workoutsCollection.length - 1].id);
+         res.send(workoutId);
      });
- 
  })
  
  router.post("/edit/basic/:workoutId", async (req, res)=>{
@@ -271,7 +212,7 @@ router.get("/basic", isAuth, async (req, res) => {
      Object.assign( editingWorkout, req.body );
      await userDoc.save();
      res.send(JSON.stringify(editingWorkout));
- })
+ });
 
  router.delete("/deleteWorkoutsCollection",async (req,res) => {
      const doc = await User.findOne({username:req.user.username});
@@ -366,3 +307,48 @@ router.get("/basic", isAuth, async (req, res) => {
  });
 
  module.exports = router;
+
+ var weeklyWorkoutTemplate = [
+    {
+        day: "Mon",
+        dayNum:1,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[]
+    },
+    {
+        day: "Tue",
+        dayNum:2,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+    {
+        day: "Wed",
+        dayNum:3,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+    {
+        day: "Thur",
+        dayNum:4,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+    {
+        day: "Fri",
+        dayNum:5,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+    {
+        day: "Sat",
+        dayNum:6,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+    {
+        day: "Sun",
+        dayNum:7,
+        // status:["not-scheduled","scheduled","completed"]
+        workouts:[],
+    },
+];

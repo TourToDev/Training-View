@@ -28,6 +28,25 @@ function weekTimeRange() {
     return [weekStart, weekEnd];
 }
 
+function getWeeklyWorkout(wksCtns) {
+    const [weekStart, weekEnd] = weekTimeRange();
+ 
+    const weeklyWorkouts = wksCtns 
+                                .filter((workout) => ((workout.workoutTimestamp >= weekStart && workout.workoutTimestamp <=weekEnd)? true : false) )
+                                .map( workout => ({
+                                        workoutId:workout.id,
+                                        status: workout.status,
+                                        workoutTimestamp:workout.workoutTimestamp,
+                                        weekDay:new Date(workout.workoutTimestamp).getDay(),
+                                        planned:workout.planned,
+                                        basic:workout.basic,
+                                        power:workout.power,
+                                    }) 
+                                );
+    return weeklyWorkouts;
+}
+
 module.exports = {
     weekTimeRange,
+    getWeeklyWorkout,
 };

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 const isAuth = require('./authMiddleware').isAuth;
 const connection = require('../config/database');
 
@@ -28,7 +27,6 @@ router.get("/powerInfo", isAuth, (req, res) => {
         ...req.user.power
     })
 } );
-
 
 //update an user's basic information
 router.post("/updateBasicInfo",isAuth, async (req,res)=>{
