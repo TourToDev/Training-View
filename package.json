@@ -1,0 +1,23 @@
+{
+  "name": "training-view",
+  "version": "1.0.0",
+  "description": "## 相关论文 https://www.yuque.com/docs/share/37f0bb9a-6336-466f-9e73-91b919245d98?# 《论文草稿》 ## 英文版 https://www.yuque.com/docs/share/34dbfb0f-967c-4e16-b6c3-8ac05101b088?# 《Paper Draft》",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TourToDev/Training-View.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TourToDev/Training-View/issues"
+  },
+  "homepage": "https://github.com/TourToDev/Training-View#readme"
+}
