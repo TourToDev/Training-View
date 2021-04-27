@@ -30,6 +30,7 @@ export default function WeeklyListItem({
     const briefInfo = (
         <div onClick={()=>{
             setModalVisible(true);
+            setWorkoutModalDate(nowDate.getTime());
             setWorkoutId(workoutsArr[0].workoutId);
         }}>
             <p>

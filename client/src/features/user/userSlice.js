@@ -46,7 +46,7 @@ export const userSlice = createSlice({
     usersBasicReceived(state, action) {
       if (state.loading) {
           state.loading = false;
-          state.basicInfo = action.payload
+          state.basicInfo = action.payload;
       }
     },
     usersUpdating(state,action) {
@@ -114,12 +114,15 @@ export const updateUser = data => async dispatch => {
       {
         mode:"cors",
         credentials:"include",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+          },
         method:"post",
         body:data,
       }
     );
     const resultText = await result.text();
-    console.log(resultText);
     resultText==="Updated"? dispatch(userUpdated(data)): null;
 };
 

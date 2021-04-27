@@ -28,6 +28,10 @@ router.get("/powerInfo", isAuth, (req, res) => {
     })
 } );
 
+router.get("/trainingLoad",isAuth, (req,res)=>{
+    res.send(req.user.trainingLoad);
+})
+
 //update an user's basic information
 router.post("/updateBasicInfo",isAuth, async (req,res)=>{
     console.log(req.body.username)

@@ -98,11 +98,9 @@ router.get("/basic", isAuth, async (req, res) => {
  })
  
  router.get("/weeklyWorkout",isAuth, async (req, res) => {
-     console.log("Getting weekly workout")
      const userDoc = await User.findOne({username:req.user.username});
      const weeklyWorkouts = getWeeklyWorkout(userDoc.workoutsCollection);
-     let weekInfo = [...weeklyWorkoutTemplate];
- 
+     let weekInfo = getWeekTemplate();
      weeklyWorkouts.forEach( workout => {
          const weekIndex = workout.weekDay === 0? 6 : workout.weekDay - 1;
          weekInfo[weekIndex].workouts.push({
@@ -114,15 +112,14 @@ router.get("/basic", isAuth, async (req, res) => {
              basic:workout.basic,
              power:workout.power,
          })
-     } )
-     
+     });
      res.send(
          {
              weekInfo,
          }
      );
- })
- 
+})
+
  //save a workout's basic information into the database
  router.post("/add/basic",isAuth, async (req, res) => {
      const {
@@ -152,7 +149,6 @@ router.get("/basic", isAuth, async (req, res) => {
      console.log("Uploading");
      const workFile = req.files.workoutfile.data;
      const workoutTimestamp = parseInt(req.body.workoutTimestamp);
- 
      //   Create a FitParser instance (options argument is optional)
      const fitParser = new FitParser({
          force: true,
@@ -162,34 +158,26 @@ router.get("/basic", isAuth, async (req, res) => {
          elapsedRecordField: true,
          mode: 'cascade',
      });
- 
      fitParser.parse(workFile, async (err, data) => {
          if (err) {
              res.send("Error when parsing data.");
          }
  
          const currentFTP = req.user.power.FTP;
- 
          //construct the workout object from fileData and other information
          const workout = getWorkoutObjectFromFile(data, currentFTP, workoutTimestamp, "completed");
-   
          workout.updateNP();
          workout.updateIF();
          workout.updateTSS();
          workout.updateVI();
-
          if (Object.keys(workout.detail).length) {
              workout.detail.forEach( unit => {
                  unit.altitude = unit.altitude * 1000; 
              } )
          }
-         
-         //then save the workout into the collection
          const userDoc =  await User.findOne({username: req.user.username});
          userDoc.workoutsCollection.push(workout);
-         
          await userDoc.save();
- 
          // schedule a macro task to update the CTL,ATL and TSB
          setTimeout( async ()=>{
              // calculate the new CTL, ATL, and TSB
@@ -197,9 +185,7 @@ router.get("/basic", isAuth, async (req, res) => {
  
              await userDoc.updatePowerProfile(workout.detail);
          });
-
          const workoutId = userDoc.workoutsCollection[userDoc.workoutsCollection.length - 1].id;
- 
          res.send(workoutId);
      });
  })
@@ -308,47 +294,41 @@ router.get("/basic", isAuth, async (req, res) => {
 
  module.exports = router;
 
- var weeklyWorkoutTemplate = [
+const getWeekTemplate = () => ([
     {
         day: "Mon",
         dayNum:1,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[]
     },
     {
         day: "Tue",
         dayNum:2,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
     {
         day: "Wed",
         dayNum:3,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
     {
         day: "Thur",
         dayNum:4,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
     {
         day: "Fri",
         dayNum:5,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
     {
         day: "Sat",
         dayNum:6,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
     {
         day: "Sun",
         dayNum:7,
-        // status:["not-scheduled","scheduled","completed"]
         workouts:[],
     },
-];
+])
+

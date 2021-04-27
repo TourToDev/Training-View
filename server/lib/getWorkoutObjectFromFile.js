@@ -43,10 +43,10 @@ function getWorkoutObjectFromFile(fileData, FTP, workoutTimestamp, status) {
       
             const workoutDetail = workoutLap1.records.map( record => ({
               second: record.timer_time,
-              power: record.power,
-              speed: record.speed,
-              heart_rate: record.heart_rate,
-              altitude:record.altitude,
+              power: trimTo2Digit(record.power),
+              speed: trimTo2Digit(record.speed),
+              heart_rate: trimTo2Digit(record.heart_rate),
+              altitude:parseFloat(record.altitude.toFixed(3)),
               cadence: record.cadence,
             }));
       

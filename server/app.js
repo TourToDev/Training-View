@@ -15,7 +15,7 @@ const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
 const app = express();
-
+const port = process.env.PORT || 3000;
 app.use(cors(
     {
         origin:"http://localhost:8080",
@@ -59,6 +59,6 @@ app.use(express.static("./public"))
 
 app.use(routes);
 
-app.listen(3000, ()=>{
-    console.log("Backend has already start");
+app.listen(port, ()=>{
+    console.log("Backend has already start at:"+port);
 });

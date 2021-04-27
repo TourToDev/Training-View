@@ -1,12 +1,16 @@
-import { Formik,Form,Field} from 'formik';
-import React, { PureComponent, useReducer, useRef, useEffect, useState} from 'react'
-import { useSelector ,useDispatch} from 'react-redux';
+import React, { useRef } from 'react'
+import { useDispatch} from 'react-redux';
 import { fetchBasicWorkouts, fetchWeeklyWorkouts } from '../../features/workoutsCollection/workoutsCollectionSlice';
 import { secondsToHms, hmsToSecond } from '../../lib/timeUtils';
 import Button from '../Button/Button';
 
 
-export default function ModalHeader({reducerState, date, modalMode, setModalMode, setWorkoutId}) {
+export default function ModalHeader({
+    reducerState, 
+    date, 
+    modalMode, 
+    setModalMode, 
+    setWorkoutId}) {
     const state = reducerState;
     const uploadRef = useRef();
     const reduxDispatch = useDispatch();
@@ -82,6 +86,7 @@ var months = [
     "February",
     "March",
     "April",
+    "May",
     "June",
     "July",
     "August",

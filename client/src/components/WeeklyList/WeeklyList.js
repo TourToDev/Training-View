@@ -11,14 +11,11 @@ import HeaderText from "../HeaderText";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
 
 export default function WeeklyList() {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(fetchWeeklyWorkouts());
-    }, [])
+
     const weeklyWorkouts = useSelector(state => state.workoutsCollection.weeklyWorkouts);
     const weeklyWorkoutsLoading = useSelector( state => state.workoutsCollection.weeklyWorkoutsLoading );
 
-    const [workoutModalDate, setWorkoutModalDate] = useState(new Date().getTime());
+    const [workoutModalDate, setWorkoutModalDate] = useState( new Date().getTime() );
     const [workoutId, setWorkoutId] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     return (
@@ -28,7 +25,6 @@ export default function WeeklyList() {
             </HeaderText>
             <Spin spinning={weeklyWorkoutsLoading} indicator={<LoadingOutlined style={{ fontSize: 24 }}/>}> 
                 <List className="tv-app-weeklylist-list"
-                   
                     size="large"
                     dataSource={weeklyWorkouts}
                     renderItem={
@@ -42,8 +38,6 @@ export default function WeeklyList() {
                     }
                 />
             </Spin>
-
-
             <WorkoutModal 
                 visible={modalVisible} 
                 setVisible={setModalVisible}

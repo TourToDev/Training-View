@@ -1,4 +1,5 @@
-const _ = require('lodash')
+const _ = require('lodash');
+const { trimTo2Digit } = require('./numberUtils');
 
 function calculateNormalizedPower(workoutDetail=[]) {
     let recordsOfPower = workoutDetail.map( (record) => {
@@ -12,35 +13,33 @@ function calculateNormalizedPower(workoutDetail=[]) {
         powered_rolling_avg.push( Math.pow(_.mean(rolling_window),4) );
     }
 
-    return Math.pow(_.mean(powered_rolling_avg),0.25);
+    return trimTo2Digit(Math.pow(_.mean(powered_rolling_avg),0.25));
 };
 
 
 function calculateIntensityFactor(NP,FTP) {
-    return NP/FTP;
+    return trimTo2Digit(NP/FTP);
 }
 
 function calculateTrainingStressScore(FTP,NP,duration,IF) {
-    return (duration * NP * IF) / (FTP * 36);
+    return trimTo2Digit((duration * NP * IF) / (FTP * 36));
 }
 
 function calculateChronicTrainingLoad(arrOfTSS) {
     //CTL = Average TSS of last 42 days
-    console.log("TSS array:")
-    console.log(arrOfTSS)
-    const CTL = _.mean(arrOfTSS);
+    const CTL = trimTo2Digit(_.sum(arrOfTSS)/42);
     return !CTL? 0: CTL;
 }
 
 function calculateAcuteTrainingLoad(arrOfTSS) {
     //ATL = Average TSS of last 7 days
-    const ATL = _.mean(arrOfTSS);
+    const ATL = trimTo2Digit(_.sum(arrOfTSS)/7);
     return !ATL? 0: ATL;
 }
 
 function calculateTrainingStressBalance(CTL,ATL) {
     //TSB = CTL – ATL
-    return CTL - ATL;
+    return trimTo2Digit(CTL - ATL);
 }
 
 

@@ -20,3 +20,47 @@
     }
 }
 
+.tv-app-calendar {
+    height: 100%;
+    padding: 1em 2em 2em 2em;
+
+    &-workout {
+        min-height: 35px;
+        border: 1px solid gray;
+        box-shadow: 0 3px 6px rgba(0,0,0,.16);
+        padding: 4px;
+        background: #edf6e9;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        & .value {
+            display: block;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #4d4d4d;
+            font-size: 0.7em;
+        }
+
+        & .icon-container {
+            color: #72bb52;
+            width: 18px;
+        }
+
+        &:hover {
+            box-shadow: 0 8px 8px rgba(0,0,0,.16);
+        }
+
+    }
+}
+
+.calendar-plus-block {
+    visibility: hidden;
+}
+
+.plus-block-container {
+    &:hover .calendar-plus-block {
+        visibility: visible;
+    }
+}

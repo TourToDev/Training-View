@@ -7,7 +7,7 @@ import { secondsToHms, hmsToSecond } from '../../lib/timeUtils';
 import { Spin } from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
 
-export default function WorkoutForm({workoutId, formRef, date, reducerState, dispatch}) {
+export default function WorkoutForm({workoutId, setWorkoutId, formRef, date, reducerState, dispatch}) {
     const [formLoading, setFormLoading] = useState(false);
 
     const FTP = useSelector(state => state.user.basicInfo.FTP)
@@ -37,7 +37,9 @@ export default function WorkoutForm({workoutId, formRef, date, reducerState, dis
 
     useEffect(async () => {
         if (workoutId) {
-            console.log("begin fetching basic workout:" + workoutId)
+
+            console.log("begin fetching basic workout:" + workoutId);
+            setFormLoading(false);
             dispatch({
                 type:"reset",
             })
@@ -149,6 +151,7 @@ export default function WorkoutForm({workoutId, formRef, date, reducerState, dis
                             body: JSON.stringify(payload)
                         });
                         const resWorkoutId = await res.text();
+                        setWorkoutId(resWorkoutId);
                     }
                     reduxDispatch(fetchWeeklyWorkouts());
                     reduxDispatch(fetchBasicWorkouts());

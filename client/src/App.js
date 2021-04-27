@@ -44,8 +44,8 @@ const App = () => {
         </authContext.Provider>
       </HashRouter>
     </Provider>
-  )  
-}
+  )
+};
 
 const PrivateRoute = ({children, setUser, ...rest}) => {
   const auth = useContext(authContext);
@@ -79,7 +79,6 @@ const PrivateRoute = ({children, setUser, ...rest}) => {
         }
       }
     />
-
   )
 }
 
