@@ -53,7 +53,7 @@ const PrivateRoute = ({children, setUser, ...rest}) => {
   useEffect( () => {
    axios({
      method:"get",
-     url:"http://localhost:3000/userBasic/basicInfo",
+     url:"/userBasic/basicInfo",
      withCredentials: true,
    }).then(res =>{
      setUser(res.data);

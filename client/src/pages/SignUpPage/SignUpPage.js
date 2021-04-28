@@ -68,7 +68,7 @@ const SignupForm = () => {
                   onSubmit={values => {
                       axios({
                         method:"post",
-                        url:"http://localhost:3000/register",
+                        url:"/register",
                         data:values,
                       }).then( (res) => {
                         console.log(res.data)

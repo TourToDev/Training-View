@@ -44,7 +44,7 @@ const LoginPage = ({setUser}) => {
             onSubmit={values => {
               axios({
                 method:"post",
-                url:"http://localhost:3000/login",
+                url:"/login",
                 data:values,
               })
               .then( res => {

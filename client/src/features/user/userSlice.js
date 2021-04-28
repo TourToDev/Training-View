@@ -110,7 +110,7 @@ export const fetchUsers = () => async dispatch => {
 export const updateUser = data => async dispatch => {
     dispatch(usersUpdating());
     const result = await fetch(
-      "http://localhost:3000/userBasic/updateBasicInfo",
+      "/userBasic/updateBasicInfo",
       {
         mode:"cors",
         credentials:"include",
