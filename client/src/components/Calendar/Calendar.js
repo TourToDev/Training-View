@@ -1,4 +1,4 @@
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, TagOutlined } from '@ant-design/icons';
 import { Calendar as ACalendar, Badge } from 'antd';
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
@@ -30,22 +30,25 @@ export default function Calendar() {
             )
         }
         const workout = workoutArr[0];
+        const displayValue = getDisplayValues(workoutArr);
+        const planned = workout.status === "planned";
+
         return (
             <div 
-                className="tv-app-calendar-workout"
+                className={`tv-app-calendar-workout ${planned? "workout-planned": null}`}
                 onClick={()=>{
                     setModalVisible(true);
                     setWorkoutId(workout.workoutId);
                     setWorkoutModalDate(workoutTimestamp);
                 }}
             >
-                <div className="value-container">
-                    <span className="value"> { secondsToHms(workout.basic.duration) } </span>
-                    <span className="value"> {workout.basic.distance} KM </span>
-                    <span className="value"> {workout.power.TSS} TSS </span>
+                <div className={`value-container`}>
+                    <span className="value"> { displayValue.duration } </span>
+                    <span className="value"> {displayValue.distance} KM </span>
+                    <span className="value"> {displayValue.TSS} TSS </span>
                 </div>
-                <div className="icon-container">
-                    <CheckCircleOutlined/>
+                <div className={`icon-container ${planned? "icon-container-planned" : null}`}>
+                    {planned? <TagOutlined /> :<CheckCircleOutlined/>}
                 </div>
             </div>
         )
@@ -63,4 +66,23 @@ export default function Calendar() {
             />
         </div>
     )
+}
+
+function getDisplayValues(workoutsArr) {
+    const result = {}
+    if (workoutsArr.length === 0) {
+        return result;
+    } 
+    
+    if (workoutsArr[0].basic.duration) {
+        result.duration = secondsToHms(workoutsArr[0].basic.duration);
+        result.distance = workoutsArr[0].basic.distance;
+        result.TSS = workoutsArr[0].power.TSS;
+    } else if ( workoutsArr[0].planned && workoutsArr[0].planned.duration) {
+        result.duration =secondsToHms(workoutsArr[0].planned.duration);
+        result.distance = workoutsArr[0].planned.distance;
+        result.TSS = workoutsArr[0].planned.TSS;
+    }
+
+    return result;
 }

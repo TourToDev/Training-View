@@ -84,7 +84,7 @@ export const {
 export const fetchBasicWorkouts = () => async dispatch => {
     dispatch(workoutsBasicLoading());
     const res = await fetch(
-        "http://localhost:3000/workoutsCollection/basic",
+        "/workoutsCollection/basic",
         {
             mode:"cors",
             credentials:"include"
@@ -96,7 +96,7 @@ export const fetchBasicWorkouts = () => async dispatch => {
 export const fetchWeeklyWorkouts = () => async (dispatch) => {
     dispatch(weeklyWorkoutsLoading());
     const res = await fetch(
-        "http://localhost:3000/workoutsCollection/weeklyWorkout",
+        "/workoutsCollection/weeklyWorkout",
         {
             mode:"cors",
             credentials:"include"

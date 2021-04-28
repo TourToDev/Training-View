@@ -12,7 +12,7 @@ module.exports = {
         contentBase: "./dist",
         hot: true,
         proxy: {
-            '/user': 'http://localhost:3000',
+            '/': 'http://localhost:3000',
           },
     },
     devtool: "source-map",

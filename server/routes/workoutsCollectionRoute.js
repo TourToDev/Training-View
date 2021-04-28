@@ -19,12 +19,13 @@ router.get("/basic", isAuth, async (req, res) => {
     const userDoc = await  User.findOne({username:req.user.username});
     const workoutsBasic = userDoc.workoutsCollection.map( 
         (workout) => {
-            const {id:workoutId, workoutTimestamp, status, basic, power,} = workout;
+            const {id:workoutId, workoutTimestamp, status, basic, power,planned} = workout;
 
              return {
                  workoutId,
                  status,
                  workoutTimestamp,
+                 planned,
                  basic,
                  power,
              };

@@ -18,7 +18,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors(
     {
-        origin:"http://localhost:8080",
+        origin:["http://localhost:8080","https://imminent-coordinated-beanie.glitch.me/"],
         credentials:true,
         
     }

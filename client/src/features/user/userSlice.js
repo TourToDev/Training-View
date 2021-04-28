@@ -86,7 +86,7 @@ export const {
 export const fetchUsers = () => async dispatch => {
     dispatch(usersBasicLoading());
     const basic = await fetch(
-      "http://localhost:3000/userBasic/basicInfo",
+      "/userBasic/basicInfo",
       {
         mode:"cors",
         credentials:"include"
@@ -97,7 +97,7 @@ export const fetchUsers = () => async dispatch => {
 
     dispatch(powerInfoLoading());
     const power =  await fetch(
-      "http://localhost:3000/userBasic/powerInfo",
+      "/userBasic/powerInfo",
       {
         mode:"cors",
         credentials:"include"
